@@ -45,6 +45,7 @@ namespace Calibr8Fit.Api.Repository.Base
             // Check if entity exists by key
             return await _dbSet.FindAsync(keyValues) is not null;
         }
+        // TODO: Throw exception if entity with same key already exists instead of returning null?
         public virtual async Task<T?> AddAsync(T entity)
         {
             var keyValues = GetPrimaryKeyValues(entity);

@@ -21,5 +21,7 @@ namespace Calibr8Fit.Api.Models
         public virtual ICollection<UserFollower>? Following { get; set; } = [];
         public virtual ICollection<Post>? Posts { get; set; } = [];
         public virtual ICollection<Comment>? Comments { get; set; } = [];
+        public virtual ICollection<ChatMember>? ChatMemberships { get; set; } = [];
+        public virtual ICollection<ChatMessage>? ChatMessages { get; set; } = [];
     }
 }

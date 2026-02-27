@@ -1,6 +1,7 @@
 using Calibr8Fit.Api.Data;
 using Calibr8Fit.Api.Enums;
 using Calibr8Fit.Api.Extensions;
+using Calibr8Fit.Api.Hubs;
 using Calibr8Fit.Api.Interfaces.Repository;
 using Calibr8Fit.Api.Interfaces.Repository.Base;
 using Calibr8Fit.Api.Interfaces.Service;
@@ -21,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddOpenApi();
+builder.Services.AddSignalR();
 
 // Load environment variables from .env file
 Env.Load();
@@ -71,6 +73,7 @@ builder.Services.AddScoped<IFollowingService, FollowingService>();
 builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -87,7 +90,9 @@ builder.Services.AddScoped<IUserRepositoryBase<UserFollower, (string, string)>, 
 builder.Services.AddScoped<IUserRepositoryBase<Post, Guid>, UserRepositoryBase<Post, Guid>>();
 builder.Services.AddScoped<IUserRepositoryBase<Comment, Guid>, UserRepositoryBase<Comment, Guid>>();
 builder.Services.AddScoped<IUserRepositoryBase<PostLike, (string, Guid)>, UserRepositoryBase<PostLike, (string, Guid)>>();
-
+builder.Services.AddScoped<IChatRepository, ChatRepository>();
+builder.Services.AddScoped<IUserRepositoryBase<ChatMember, (Guid, string)>, UserRepositoryBase<ChatMember, (Guid, string)>>();
+builder.Services.AddScoped<IChatMessagesRepository, ChatMessagesRepository>();
 
 // Data Version Repositories
 builder.Services.AddDataVersionRepo<Food, Guid>(DataResource.Foods);
@@ -121,5 +126,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.MapControllers();
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

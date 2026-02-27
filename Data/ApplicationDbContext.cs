@@ -33,6 +33,9 @@ namespace Calibr8Fit.Api.Data
         public required DbSet<Comment> Comments { get; set; }
         public required DbSet<PostLike> PostLikes { get; set; }
         public required DbSet<PostImage> PostImages { get; set; }
+        public required DbSet<Chat> Chats { get; set; }
+        public required DbSet<ChatMember> ChatMembers { get; set; }
+        public required DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -371,6 +374,67 @@ namespace Calibr8Fit.Api.Data
                 .WithMany(p => p.Images) // Post can have many PostImages
                 .HasForeignKey(pi => pi.PostId)
                 .OnDelete(DeleteBehavior.Cascade); // Cascade delete for Post -> PostImage
+
+            // Configure Chat
+            builder.Entity<Chat>()
+                .HasMany(c => c.Members)
+                .WithOne(cm => cm.Chat) // Chat has many ChatMembers
+                .HasForeignKey(cm => cm.ChatId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for Chat -> ChatMember
+
+            builder.Entity<Chat>()
+                .HasMany(c => c.Messages)
+                .WithOne(cm => cm.Chat) // Chat has many ChatMessages
+                .HasForeignKey(cm => cm.ChatId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for Chat -> ChatMessage
+
+            // Configure ChatMember
+            builder.Entity<ChatMember>()
+                .HasKey(cm => new { cm.ChatId, cm.UserId }); // Composite key
+
+            builder.Entity<ChatMember>()
+                .HasOne(cm => cm.User)
+                .WithMany(u => u.ChatMemberships) // User can have many ChatMemberships
+                .HasForeignKey(cm => cm.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for User -> ChatMember
+
+            builder.Entity<ChatMember>()
+                .HasIndex(cm => new { cm.ChatId, cm.UserId }); // Composite index for ChatId and UserId
+
+            builder.Entity<ChatMember>()
+                .HasIndex(cm => cm.UserId); // Index on UserId for efficient lookups
+
+            builder.Entity<ChatMember>()
+                .HasIndex(cm => cm.ChatId); // Index on ChatId for efficient lookups
+
+            // TODO: Handle user deletion better
+            // Configure ChatMessage
+            builder.Entity<ChatMessage>()
+                .HasOne(cm => cm.User)
+                .WithMany(u => u.ChatMessages) // User can have many ChatMessages
+                .HasForeignKey(cm => cm.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for User -> ChatMessage
+
+            builder.Entity<ChatMessage>()
+                .HasOne(cm => cm.Chat)
+                .WithMany(c => c.Messages) // Chat can have many ChatMessages
+                .HasForeignKey(cm => cm.ChatId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for Chat -> ChatMessage
+
+            builder.Entity<ChatMessage>()
+                .HasOne(cm => cm.SenderMembership)
+                .WithMany(cm => cm.SentMessages) // ChatMember can have many sent ChatMessages
+                .HasForeignKey(cm => new { cm.ChatId, cm.UserId }) // Foreign key to ChatMember using ChatId and UserId
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for ChatMember -> ChatMessage
+
+            builder.Entity<ChatMessage>()
+                .HasIndex(cm => cm.ChatId); // Index on ChatId for efficient lookups
+
+            builder.Entity<ChatMessage>()
+                .HasIndex(cm => cm.UserId); // Index on UserId for efficient lookups
+
+            builder.Entity<ChatMessage>()
+                .HasIndex(cm => cm.SentAt);
         }
     }
 }

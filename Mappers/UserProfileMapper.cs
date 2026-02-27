@@ -18,6 +18,8 @@ namespace Calibr8Fit.Api.Mappers
                 ProfilePictureUrl = user.GetProfilePictureUrl(pathService)
             };
         }
+        public static IEnumerable<UserSummaryDto> ToUserSummaryDtos(this IEnumerable<User> users, IPathService pathService) =>
+            users.Select(u => u.ToUserSummaryDto(pathService));
         public static UserProfileSettingsDto ToUserProfileSettingsDto(this User user, IPathService pathService)
         {
             return new UserProfileSettingsDto
