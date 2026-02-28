@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Calibr8Fit.Api.Hubs.Abstract
 {
+    // TODO: add WithUserName
     public abstract class UserHubBase(
         ICurrentUserService currentUserService
     ) : Hub
@@ -11,12 +12,12 @@ namespace Calibr8Fit.Api.Hubs.Abstract
         protected readonly ICurrentUserService _currentUserService = currentUserService;
 
         // Helper method to get the current user
-        protected async Task<T> WithUser<T>(Func<User, T> action)
+        protected async Task WithUser(Func<User, Task> action)
         {
             if (Context.User is null) throw new HubException("User is not authenticated.");
             var user = await _currentUserService.GetCurrentUserAsync(Context.User);
             if (user is null) throw new HubException("User not found.");
-            return action(user);
+            await action(user);
         }
 
         protected async Task<T> WithUser<T>(Func<User, Task<T>> action)
@@ -27,12 +28,12 @@ namespace Calibr8Fit.Api.Hubs.Abstract
             return await action(user);
         }
 
-        protected async Task<T> WithUserId<T>(Func<string, T> action)
+        protected async Task WithUserId(Func<string, Task> action)
         {
             if (Context.User is null) throw new HubException("User is not authenticated.");
             var user = await _currentUserService.GetCurrentUserAsync(Context.User);
             if (user is null) throw new HubException("User not found.");
-            return action(user.Id);
+            await action(user.Id);
         }
 
         protected async Task<T> WithUserId<T>(Func<string, Task<T>> action)

@@ -74,6 +74,7 @@ builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IChatNotifier, ChatNotifier>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

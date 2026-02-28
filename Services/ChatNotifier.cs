@@ -1,0 +1,25 @@
+using Calibr8Fit.Api.DataTransferObjects.Chat;
+using Calibr8Fit.Api.Hubs;
+using Calibr8Fit.Api.Interfaces.Service;
+using Microsoft.AspNetCore.SignalR;
+
+namespace Calibr8Fit.Api.Services
+{
+    public class ChatNotifier(
+        IHubContext<ChatHub> hub
+    ) : IChatNotifier
+    {
+        private readonly IHubContext<ChatHub> _hub = hub;
+
+        public async Task NotifyDirectMessageAsync(string senderUsername, string recipientUsername, ChatMessageDto message)
+        {
+            // recipient gets incoming message
+            await _hub.Clients.Group(recipientUsername)
+                .SendAsync("MessageIncoming", message);
+
+            // sender gets server-ack (useful for optimistic UI / other devices)
+            await _hub.Clients.Group(senderUsername)
+                .SendAsync("MessageSent", message);
+        }
+    }
+}

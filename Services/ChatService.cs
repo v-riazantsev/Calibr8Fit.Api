@@ -13,7 +13,8 @@ namespace Calibr8Fit.Api.Services
         IUserRepositoryBase<ChatMember, (Guid, string)> chatMemberRepository,
         IChatMessagesRepository chatMessageRepository,
         IUserRepository userRepository,
-        IPathService pathService
+        IPathService pathService,
+        IChatNotifier chatNotifier
     ) : IChatService
     {
         private readonly IChatRepository _chatRepository = chatRepository;
@@ -21,6 +22,7 @@ namespace Calibr8Fit.Api.Services
         private readonly IChatMessagesRepository _chatMessageRepository = chatMessageRepository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IPathService _pathService = pathService;
+        private readonly IChatNotifier _chatNotifier = chatNotifier;
 
         public async Task<Chat> CreateDirectChatAsync(string userId1, string userId2)
         {
@@ -42,8 +44,7 @@ namespace Calibr8Fit.Api.Services
             return chat;
         }
 
-        // TODO: Notify recipient of new message (e.g., via SignalR or push notification)
-        public async Task<Result<ChatMessageDto>> SendDirectMessageAsync(SendDirectMessageRequestDto requestDto, string senderUserId, bool createChatIfNotExists = true)
+        public async Task<Result<ChatMessageDto>> SendDirectMessageAsync(SendDirectMessageRequestDto requestDto, User sender, bool createChatIfNotExists = true)
         {
             // Try to get recipient user by username
             var recipientUser = await _userRepository.GetByUsernameAsync(requestDto.RecipientUsername);
@@ -51,22 +52,33 @@ namespace Calibr8Fit.Api.Services
                 return Result<ChatMessageDto>.Failure("Recipient user not found.");
 
             // Try to get existing direct chat between sender and recipient
-            var chat = await _chatRepository.GetDirectChatBetweenUsersAsync(senderUserId, requestDto.RecipientUsername);
+            var chat = await _chatRepository.GetDirectChatBetweenUsersAsync(sender.Id, recipientUser.Id);
             if (chat is null)
             {
                 if (!createChatIfNotExists)
                     return Result<ChatMessageDto>.Failure("No existing chat between sender and recipient.");
 
                 // Create new direct chat if it doesn't exist
-                chat = await CreateDirectChatAsync(senderUserId, recipientUser.Id);
+                chat = await CreateDirectChatAsync(sender.Id, recipientUser.Id);
             }
 
             // Create new chat message
-            var createdMessage = await _chatMessageRepository.AddAsync(requestDto.ToChatMessage(senderUserId, chat.Id));
+            var createdMessage = await _chatMessageRepository.AddAsync(requestDto.ToChatMessage(sender.Id, chat.Id));
             if (createdMessage is null)
                 return Result<ChatMessageDto>.Failure("Failed to send message.");
 
-            return Result<ChatMessageDto>.Success(createdMessage.ToChatMessageDto());
+            var chatMessageDto = createdMessage.ToChatMessageDto();
+
+            // Notify recipient and sender devices via SignalR
+            await _chatNotifier.NotifyDirectMessageAsync(
+                senderUsername: sender.UserName!,
+                recipientUsername: recipientUser.UserName!,
+                message: chatMessageDto
+            );
+
+            // TODO: Send push notification 
+
+            return Result<ChatMessageDto>.Success(chatMessageDto);
         }
 
         public async Task<Result<IEnumerable<ChatMessageDto>>> GetDirectMessagesAsync(

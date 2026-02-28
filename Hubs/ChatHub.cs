@@ -1,3 +1,4 @@
+using Calibr8Fit.Api.DataTransferObjects.Chat;
 using Calibr8Fit.Api.Hubs.Abstract;
 using Calibr8Fit.Api.Interfaces.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -6,17 +7,21 @@ using Microsoft.AspNetCore.SignalR;
 namespace Calibr8Fit.Api.Hubs
 {
     public class ChatHub(
-        ICurrentUserService currentUserService
+        ICurrentUserService currentUserService,
+        IChatService chatService
     ) : UserHubBase(currentUserService)
     {
+        private readonly IChatService _chatService = chatService;
+
         [Authorize]
-        public Task SendMessage(string receiver, string message) =>
+        public Task SendDirectMessage(SendDirectMessageRequestDto requestDto) =>
             WithUser(async user =>
             {
-                // Log message sending
-                Console.WriteLine($"[SendMessage] {user.UserName} -> {receiver}: {message}");
-                // Send the message only to the recipient
-                await Clients.Group(receiver).SendAsync("ReceiveMessage", user.UserName, message);
+                Console.WriteLine($"[SendDirectMessage] User {user.UserName} is sending a message to {requestDto.RecipientUsername}: {requestDto.Content}");
+                // Send message (and create chat if it doesn't exist)
+                var result = await _chatService.SendDirectMessageAsync(requestDto, user, createChatIfNotExists: true);
+                if (!result.Succeeded)
+                    throw new HubException(string.Join("; ", result.Errors ?? ["Unknown error"]));
             });
 
         [Authorize]

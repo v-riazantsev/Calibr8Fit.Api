@@ -16,9 +16,9 @@ namespace Calibr8Fit.Api.Controllers
 
         [HttpPost("direct")]
         public Task<IActionResult> SendDirectMessage([FromBody] SendDirectMessageRequestDto requestDto) =>
-            WithUserId(async userId =>
+            WithUser(async user =>
             {
-                var result = await _chatService.SendDirectMessageAsync(requestDto, userId);
+                var result = await _chatService.SendDirectMessageAsync(requestDto, user, createChatIfNotExists: true);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
 
