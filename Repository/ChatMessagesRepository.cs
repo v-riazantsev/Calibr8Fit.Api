@@ -28,16 +28,26 @@ namespace Calibr8Fit.Api.Repository
         public async Task<List<ChatMessage>> GetDirectChatMessagesAsync(
             string userId1,
             string userId2,
-            int pageIndex,
+            Guid before,
             int pageSize
-            ) => await _dbContext.Chats
-                    .Where(c => !c.IsGroupChat &&
-                                c.Members.Any(m => m.UserId == userId1) &&
-                                c.Members.Any(m => m.UserId == userId2))
-                    .SelectMany(c => c.Messages)
-                    .OrderByDescending(m => m.SentAt)
-                    .Skip(pageIndex * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
+            )
+        {
+            var beforeMessage = await _dbSet.FindAsync(before);
+
+            // If the message with the specified 'before' ID does not exist, throw an exception
+            if (beforeMessage is null)
+                throw new ArgumentException("The specified 'before' message ID does not exist.", nameof(before));
+            
+            // Fetch messages from the direct chat between the two users that were sent before the specified message
+            return await _dbContext.Chats
+                .Where(c => !c.IsGroupChat &&
+                            c.Members.Any(m => m.UserId == userId1) &&
+                            c.Members.Any(m => m.UserId == userId2))
+                .SelectMany(c => c.Messages)
+                .Where(m => m.SentAt < beforeMessage.SentAt)
+                .OrderByDescending(m => m.SentAt)
+                .Take(pageSize)
+                .ToListAsync();
+        } 
     }
 }

@@ -7,6 +7,6 @@ namespace Calibr8Fit.Api.Interfaces.Repository
     {
         Task<List<ChatMessage>> GetChatMessagesAsync(Guid chatId);
         Task<List<ChatMessage>> GetDirectChatMessagesAsync(string userId1, string userId2);
-        Task<List<ChatMessage>> GetDirectChatMessagesAsync(string userId1, string userId2, int pageIndex, int pageSize);
+        Task<List<ChatMessage>> GetDirectChatMessagesAsync(string userId1, string userId2, Guid before, int pageSize);
     }
 }

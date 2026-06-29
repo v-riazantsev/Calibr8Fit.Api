@@ -13,11 +13,11 @@ namespace Calibr8Fit.Api.Services
 
         public async Task NotifyDirectMessageAsync(string senderUsername, string recipientUsername, ChatMessageDto message)
         {
-            // recipient gets incoming message
+            // Recipient gets incoming message
             await _hub.Clients.Group(recipientUsername)
                 .SendAsync("MessageIncoming", message);
 
-            // sender gets server-ack (useful for optimistic UI / other devices)
+            // Sender gets server-ack
             await _hub.Clients.Group(senderUsername)
                 .SendAsync("MessageSent", message);
         }

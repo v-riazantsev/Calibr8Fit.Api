@@ -11,7 +11,7 @@ namespace Calibr8Fit.Api.Interfaces.Service
         Task<Result<IEnumerable<ChatMessageDto>>> GetDirectMessagesAsync(
             string userName1,
             string userName2,
-            int? pageIndex = null,
+            Guid? before = null,
             int? pageSize = null
         );
         Task<Result<IEnumerable<ChatDto>>> GetDirectChatsAsync(string userId);

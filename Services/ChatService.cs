@@ -84,14 +84,14 @@ namespace Calibr8Fit.Api.Services
         public async Task<Result<IEnumerable<ChatMessageDto>>> GetDirectMessagesAsync(
             string userId,
             string otherUsername,
-            int? pageIndex = null,
+            Guid? before = null,
             int? pageSize = null)
         {
             var otherId = await _userRepository.GetIdByUsernameAsync(otherUsername);
             if (otherId is null) return Result<IEnumerable<ChatMessageDto>>.Failure("Other user not found.");
 
-            var messages = pageIndex.HasValue && pageSize.HasValue
-                ? await _chatMessageRepository.GetDirectChatMessagesAsync(userId, otherId, pageIndex.Value, pageSize.Value)
+            var messages = before.HasValue && pageSize.HasValue
+                ? await _chatMessageRepository.GetDirectChatMessagesAsync(userId, otherId, before.Value, pageSize.Value)
                 : await _chatMessageRepository.GetDirectChatMessagesAsync(userId, otherId);
 
             return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos());

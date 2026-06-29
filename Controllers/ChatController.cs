@@ -25,12 +25,12 @@ namespace Calibr8Fit.Api.Controllers
         [HttpGet("direct/{username}")]
         public Task<IActionResult> GetDirectMessagesWithUser(
             string username,
-            [FromQuery] int page = 0,
+            [FromQuery] Guid? before = null,
             [FromQuery] int size = 100
             ) =>
             WithUserId(async userId =>
             {
-                var result = await _chatService.GetDirectMessagesAsync(userId, username, page, size);
+                var result = await _chatService.GetDirectMessagesAsync(userId, username, before, size);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
 
