@@ -14,7 +14,7 @@ namespace Calibr8Fit.Api.Models
         public required string Content { get; set; }
 
         public required DateTime SentAt { get; set; }
-        public DateTime? ReadAt { get; set; }
+        public virtual ICollection<ChatMessageRead> Reads { get; set; } = [];
 
         public bool Deleted { get; set; } = false;
     }

@@ -1,5 +1,8 @@
 using Calibr8Fit.Api.DataTransferObjects.Chat;
+using Calibr8Fit.Api.DataTransferObjects.User;
+using Calibr8Fit.Api.Interfaces.Service;
 using Calibr8Fit.Api.Models;
+using Calibr8Fit.Api.Repository.Results;
 
 namespace Calibr8Fit.Api.Mappers
 {
@@ -23,19 +26,32 @@ namespace Calibr8Fit.Api.Mappers
                 Content = request.Content,
                 SentAt = request.SendedAt
             };
-        public static ChatMessageDto ToChatMessageDto(this ChatMessage message) =>
+        public static ChatMessageDto ToChatMessageDto(this ChatMessageDetailed message, string currentUserId, IPathService pathService) =>
             new()
             {
                 Id = message.Id,
                 ChatId = message.ChatId,
-                SenderUsername = message.User?.UserName ?? "Unknown",
+                Sender = new UserSummaryDto
+                {
+                    UserName = message.SenderUserName,
+                    FirstName = message.SenderFirstName,
+                    LastName = message.SenderLastName,
+                    ProfilePictureUrl = message.SenderProfilePictureFileName is not null
+                        ? pathService.GetProfilePictureUrl(message.SenderUserName, message.SenderProfilePictureFileName)
+                        : null
+                },
                 Content = message.Content,
-                SendedAt = message.SentAt,
-                ReadAt = message.ReadAt
+                SentAt = message.SentAt,
+                IsOwnMessage = message.SenderUserId == currentUserId,
+                IsReadByRequester = message.IsReadByRequester,
+                IsReadByOthers = message.IsReadByOthers
             };
 
-        public static IEnumerable<ChatMessageDto> ToChatMessageDtos(this IEnumerable<ChatMessage> messages) =>
-            messages.Select(m => m.ToChatMessageDto());
+        public static IEnumerable<ChatMessageDto> ToChatMessageDtos(
+            this IEnumerable<ChatMessageDetailed> messages,
+            string currentUserId,
+            IPathService pathService)
+            => messages.Select(m => m.ToChatMessageDto(currentUserId, pathService));
 
     }
 }

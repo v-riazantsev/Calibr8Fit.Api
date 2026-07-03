@@ -8,5 +8,7 @@ namespace Calibr8Fit.Api.Options
         public required string ProfilePicturesSubfolder { get; set; }
         public required string PostSubfolder { get; set; }
         public required string PostImagesSubfolder { get; set; }
+        public required string ChatPath { get; set; }
+        public required string ChatAvatarName { get; set; }
     }
 }

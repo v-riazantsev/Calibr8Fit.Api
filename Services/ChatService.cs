@@ -24,10 +24,10 @@ namespace Calibr8Fit.Api.Services
         private readonly IPathService _pathService = pathService;
         private readonly IChatNotifier _chatNotifier = chatNotifier;
 
-        public async Task<Chat> CreateDirectChatAsync(string userId1, string userId2)
+        public async Task<Chat> CreateDirectChatAsync(string userId, string otherUserId)
         {
             // Check if a direct chat already exists between the two users
-            if (await _chatRepository.GetDirectChatBetweenUsersAsync(userId1, userId2) is not null)
+            if (await _chatRepository.GetDirectChatBetweenUsersAsync(userId, otherUserId) is not null)
                 throw new InvalidOperationException("A direct chat between these users already exists.");
 
             // Create new direct chat
@@ -37,8 +37,8 @@ namespace Calibr8Fit.Api.Services
                 Name = null,
                 Members =
                 [
-                    new() { UserId = userId1, IsAdmin = false },
-                    new() { UserId = userId2, IsAdmin = false }
+                    new() { UserId = userId, IsAdmin = false },
+                    new() { UserId = otherUserId, IsAdmin = false }
                 ]
             }) ?? throw new Exception("Failed to create direct chat.");
             return chat;
@@ -63,11 +63,11 @@ namespace Calibr8Fit.Api.Services
             }
 
             // Create new chat message
-            var createdMessage = await _chatMessageRepository.AddAsync(requestDto.ToChatMessage(sender.Id, chat.Id));
+            var createdMessage = await _chatMessageRepository.AddAndReturnDetailedAsync(requestDto.ToChatMessage(sender.Id, chat.Id));
             if (createdMessage is null)
                 return Result<ChatMessageDto>.Failure("Failed to send message.");
 
-            var chatMessageDto = createdMessage.ToChatMessageDto();
+            var chatMessageDto = createdMessage.ToChatMessageDto(sender.UserName!, _pathService);
 
             // Notify recipient and sender devices via SignalR
             await _chatNotifier.NotifyDirectMessageAsync(
@@ -91,13 +91,26 @@ namespace Calibr8Fit.Api.Services
             if (otherId is null) return Result<IEnumerable<ChatMessageDto>>.Failure("Other user not found.");
 
             var messages = before.HasValue && pageSize.HasValue
-                ? await _chatMessageRepository.GetDirectChatMessagesAsync(userId, otherId, before.Value, pageSize.Value)
-                : await _chatMessageRepository.GetDirectChatMessagesAsync(userId, otherId);
+                ? await _chatMessageRepository.GetDetailedDirectChatMessagesAsync(userId, otherId, before.Value, pageSize.Value)
+                : await _chatMessageRepository.GetDetailedDirectChatMessagesAsync(userId, otherId);
 
-            return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos());
+            return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos(userId, _pathService));
+        }
+        public async Task<Result<IEnumerable<ChatMessageDto>>> GetChatMessagesAsync(
+            Guid chatId,
+            string userId,
+            Guid? before = null,
+            int? pageSize = null
+        )
+        {
+            var messages = before.HasValue && pageSize.HasValue
+                ? await _chatMessageRepository.GetDetailedChatMessagesAsync(chatId, userId, before.Value, pageSize.Value)
+                : await _chatMessageRepository.GetDetailedChatMessagesAsync(chatId, userId);
+
+            return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos(userId, _pathService));
         }
 
-        public async Task<Result<IEnumerable<ChatDto>>> GetDirectChatsAsync(string userId)
+        public async Task<Result<IEnumerable<ChatDto>>> GetUserChatsAsync(string userId)
         {
             var chats = await _chatRepository.GetUserChatsAsync(userId);
             var chatDtos = chats.ToChatDtos(_pathService);

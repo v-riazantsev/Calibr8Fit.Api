@@ -6,14 +6,24 @@ namespace Calibr8Fit.Api.Interfaces.Service
 {
     public interface IChatService
     {
-        Task<Chat> CreateDirectChatAsync(string userId1, string userId2);
-        Task<Result<ChatMessageDto>> SendDirectMessageAsync(SendDirectMessageRequestDto requestDto, User sender, bool createChatIfNotExists = true);
+        Task<Chat> CreateDirectChatAsync(string userId, string otherUserId);
+        Task<Result<ChatMessageDto>> SendDirectMessageAsync(
+            SendDirectMessageRequestDto requestDto,
+            User sender,
+            bool createChatIfNotExists = true
+        );
         Task<Result<IEnumerable<ChatMessageDto>>> GetDirectMessagesAsync(
-            string userName1,
-            string userName2,
+            string userId,
+            string otherUserName,
             Guid? before = null,
             int? pageSize = null
         );
-        Task<Result<IEnumerable<ChatDto>>> GetDirectChatsAsync(string userId);
+        Task<Result<IEnumerable<ChatMessageDto>>> GetChatMessagesAsync(
+            Guid chatId,
+            string userId,
+            Guid? before = null,
+            int? pageSize = null
+        );
+        Task<Result<IEnumerable<ChatDto>>> GetUserChatsAsync(string userId);
     }
 }

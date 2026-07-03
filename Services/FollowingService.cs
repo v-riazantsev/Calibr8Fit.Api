@@ -6,6 +6,7 @@ using Calibr8Fit.Api.Mappers;
 using Calibr8Fit.Api.Models;
 using Calibr8Fit.Api.Services.Results;
 
+// TODO: consider moving querying logic to repository layer
 namespace Calibr8Fit.Api.Services
 {
     public class FollowingService(

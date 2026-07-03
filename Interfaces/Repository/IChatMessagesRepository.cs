@@ -1,12 +1,15 @@
 using Calibr8Fit.Api.Interfaces.Repository.Base;
 using Calibr8Fit.Api.Models;
+using Calibr8Fit.Api.Repository.Results;
 
 namespace Calibr8Fit.Api.Interfaces.Repository
 {
     public interface IChatMessagesRepository : IRepositoryBase<ChatMessage, Guid>
     {
-        Task<List<ChatMessage>> GetChatMessagesAsync(Guid chatId);
-        Task<List<ChatMessage>> GetDirectChatMessagesAsync(string userId1, string userId2);
-        Task<List<ChatMessage>> GetDirectChatMessagesAsync(string userId1, string userId2, Guid before, int pageSize);
+        Task<ChatMessageDetailed?> AddAndReturnDetailedAsync(ChatMessage message);
+        Task<List<ChatMessageDetailed>> GetDetailedChatMessagesAsync(Guid chatId, string requesterUserId);
+        Task<List<ChatMessageDetailed>> GetDetailedChatMessagesAsync(Guid chatId, string requesterUserId, Guid before, int pageSize);
+        Task<List<ChatMessageDetailed>> GetDetailedDirectChatMessagesAsync(string requesterUserId, string otherUserId);
+        Task<List<ChatMessageDetailed>> GetDetailedDirectChatMessagesAsync(string requesterUserId, string otherUserId, Guid before, int pageSize);
     }
 }

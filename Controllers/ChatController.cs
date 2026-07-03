@@ -34,11 +34,22 @@ namespace Calibr8Fit.Api.Controllers
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
 
-        [HttpGet("direct")]
-        public Task<IActionResult> GetDirectChats() =>
+        [HttpGet]
+        public Task<IActionResult> GetUserChats() =>
             WithUserId(async userId =>
             {
-                var result = await _chatService.GetDirectChatsAsync(userId);
+                var result = await _chatService.GetUserChatsAsync(userId);
+                return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            });
+        [HttpGet("messages")]
+        public Task<IActionResult> GetChatMessages(
+            [FromQuery] Guid chatId,
+            [FromQuery] Guid? before = null,
+            [FromQuery] int size = 100
+            ) =>
+            WithUserId(async userId =>
+            {
+                var result = await _chatService.GetChatMessagesAsync(chatId, userId, before, size);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
     }

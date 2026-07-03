@@ -36,6 +36,7 @@ namespace Calibr8Fit.Api.Data
         public required DbSet<Chat> Chats { get; set; }
         public required DbSet<ChatMember> ChatMembers { get; set; }
         public required DbSet<ChatMessage> ChatMessages { get; set; }
+        public required DbSet<ChatMessageRead> ChatMessageReads { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -435,6 +436,28 @@ namespace Calibr8Fit.Api.Data
 
             builder.Entity<ChatMessage>()
                 .HasIndex(cm => cm.SentAt);
+
+            // Configure ChatMessageRead
+            builder.Entity<ChatMessageRead>()
+                .HasKey(cmr => new { cmr.ChatMessageId, cmr.UserId }); // Composite key
+
+            builder.Entity<ChatMessageRead>()
+                .HasOne(cmr => cmr.ChatMessage)
+                .WithMany(cm => cm.Reads) // ChatMessage can have many ChatMessageReads
+                .HasForeignKey(cmr => cmr.ChatMessageId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for ChatMessage -> ChatMessageRead
+
+            builder.Entity<ChatMessageRead>()
+                .HasOne(cmr => cmr.User)
+                .WithMany(u => u.ChatMessageReads) // User can have many ChatMessageReads
+                .HasForeignKey(cmr => cmr.UserId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete for User -> ChatMessageRead
+
+            builder.Entity<ChatMessageRead>()
+                .HasIndex(cmr => cmr.ChatMessageId); // Index on ChatMessageId
+
+            builder.Entity<ChatMessageRead>()
+                .HasIndex(cmr => cmr.UserId); // Index on UserId
         }
     }
 }

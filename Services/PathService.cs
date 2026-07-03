@@ -95,5 +95,22 @@ namespace Calibr8Fit.Api.Services
             // Return path if it exists
             return File.Exists(path) ? path : null;
         }
+        public string GetChatDirectoryPath(Guid chatId) =>
+            EnsureDirectoryExists(Path.Combine(
+                _options.RootPath,
+                _options.ChatPath,
+                chatId.ToString()
+            ));
+        public string? GetChatAvatarPath(Guid chatId) =>
+            Path.Combine(
+                GetChatDirectoryPath(chatId),
+                _options.ChatAvatarName
+            );
+
+        public string? GetChatAvatarUrl(Guid chatId)
+        {
+            var path = GetChatAvatarPath(chatId);
+            return path == null ? null : BuildPublicUrl(path);
+        }
     }
 }
