@@ -24,6 +24,6 @@ namespace Calibr8Fit.Api.Interfaces.Service
             Guid? before = null,
             int? pageSize = null
         );
-        Task<Result<IEnumerable<ChatDto>>> GetUserChatsAsync(string userId);
+        Task<Result<IEnumerable<ChatPreviewDto>>> GetUserChatsAsync(string userId);
     }
 }

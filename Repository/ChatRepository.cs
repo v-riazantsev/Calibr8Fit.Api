@@ -26,53 +26,59 @@ namespace Calibr8Fit.Api.Repository
             await _dbSet
                 .AsNoTracking()
                 .Where(c => c.Members.Any(m => m.UserId == userId))
-                .Select(c => new ChatWithDetails
+                .Select(c => new
                 {
-                    Chat = c,
+                    ChatWithDetails = new ChatWithDetails
+                    {
+                        Chat = c,
 
-                    LastMessagePreview = c.Messages
-                        .OrderByDescending(m => m.SentAt)
-                        .Select(m => new ChatMessagePreview
-                        {
-                            UserName = m.User!.UserName!,
-                            Content = m.Content,
-                            SentAt = m.SentAt,
-                            IsOwnMessage = m.UserId == userId,
-                            IsRead = m.UserId == userId
-                                ? m.Reads.Any(r => r.UserId == userId)
-                                : m.Reads.Any(r => r.UserId != userId)
-                        })
-                        .FirstOrDefault(),
-
-                    UnreadMessagesCount = c.Messages.Count(m =>
-                        m.UserId != userId &&
-                        !m.Reads.Any(r => r.UserId == userId)),
-
-                    MemberCount = c.Members.Count(),
-
-                    DirectMember = c.IsGroupChat
-                        ? null
-                        : c.Members
-                            .Where(m => m.UserId != userId)
-                            .Select(m => new DirectMemberDetails
+                        LastMessagePreview = c.Messages
+                            .OrderByDescending(m => m.SentAt)
+                            .Select(m => new ChatMessagePreview
                             {
-                                UserName = m.User!.UserName,
-
-                                FirstName = m.User.Profile != null
-                                    ? m.User.Profile.FirstName
-                                    : null,
-
-                                LastName = m.User.Profile != null
-                                    ? m.User.Profile.LastName
-                                    : null,
-
-                                ProfilePictureFileName = m.User.Profile != null
-                                    ? m.User.Profile.ProfilePictureFileName
-                                    : null
+                                UserName = m.User!.UserName!,
+                                Content = m.Content,
+                                SentAt = m.SentAt,
+                                IsOwnMessage = m.UserId == userId,
+                                IsRead = m.UserId == userId
+                                    ? m.Reads.Any(r => r.UserId == userId)
+                                    : m.Reads.Any(r => r.UserId != userId)
                             })
-                            .FirstOrDefault()
+                            .FirstOrDefault(),
+
+                        UnreadMessagesCount = c.Messages.Count(m =>
+                            m.UserId != userId &&
+                            !m.Reads.Any(r => r.UserId == userId)),
+
+                        MemberCount = c.Members.Count(),
+
+                        DirectMember = c.IsGroupChat
+                            ? null
+                            : c.Members
+                                .Where(m => m.UserId != userId)
+                                .Select(m => new DirectMemberDetails
+                                {
+                                    UserName = m.User!.UserName,
+
+                                    FirstName = m.User.Profile != null
+                                        ? m.User.Profile.FirstName
+                                        : null,
+
+                                    LastName = m.User.Profile != null
+                                        ? m.User.Profile.LastName
+                                        : null,
+
+                                    ProfilePictureFileName = m.User.Profile != null
+                                        ? m.User.Profile.ProfilePictureFileName
+                                        : null
+                                })
+                                .FirstOrDefault()
+                    },
+
+                    LastMessageSentAt = c.Messages.Max(m => (DateTime?)m.SentAt)
                 })
-                .OrderByDescending(c => c.LastMessagePreview != null ? c.LastMessagePreview.SentAt : DateTime.MinValue)
+                .OrderByDescending(x => x.LastMessageSentAt ?? DateTime.MinValue)
+                .Select(x => x.ChatWithDetails)
                 .ToListAsync();
 
 

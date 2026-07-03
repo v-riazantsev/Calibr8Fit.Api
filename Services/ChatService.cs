@@ -110,11 +110,11 @@ namespace Calibr8Fit.Api.Services
             return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos(userId, _pathService));
         }
 
-        public async Task<Result<IEnumerable<ChatDto>>> GetUserChatsAsync(string userId)
+        public async Task<Result<IEnumerable<ChatPreviewDto>>> GetUserChatsAsync(string userId)
         {
-            var chats = await _chatRepository.GetUserChatsAsync(userId);
-            var chatDtos = chats.ToChatDtos(_pathService);
-            return Result<IEnumerable<ChatDto>>.Success(chatDtos);
+            var chatsDetails = await _chatRepository.GetUserChatsWithDetailsAsync(userId);
+            var chatPreviewDtos = chatsDetails.ToChatPreviewDtos(_pathService);
+            return Result<IEnumerable<ChatPreviewDto>>.Success(chatPreviewDtos);
         }
     }
 }
