@@ -9,6 +9,8 @@ namespace Calibr8Fit.Api.DataTransferObjects.Chat
         public required DateTime CreatedAt { get; set; }
         public required int MemberCount { get; set; }
         public required ChatMessagePreviewDto? LastMessage { get; set; }
+
+        public required Guid? LastReadMessageId { get; set; }
         public required int UnreadMessagesCount { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace Calibr8Fit.Api.Repository.Results
         public required string Content { get; init; }
         public required DateTime SentAt { get; init; }
         public required bool IsOwnMessage { get; init; }
-        public required bool IsRead { get; init; }
+        public required bool IsReadByRequester { get; init; }
+        public required bool IsReadByOthers { get; init; }
     }
 }

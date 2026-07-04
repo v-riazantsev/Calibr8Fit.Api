@@ -39,8 +39,10 @@ namespace Calibr8Fit.Api.Mappers
                     Content = chatWithDetails.LastMessagePreview.Content,
                     SentAt = chatWithDetails.LastMessagePreview.SentAt,
                     IsOwnMessage = chatWithDetails.LastMessagePreview.IsOwnMessage,
-                    IsRead = chatWithDetails.LastMessagePreview.IsRead
+                    IsReadByUser = chatWithDetails.LastMessagePreview.IsReadByRequester,
+                    IsReadByOthers = chatWithDetails.LastMessagePreview.IsReadByOthers
                 } : null,
+                LastReadMessageId = chatWithDetails.LastReadMessageId,
                 UnreadMessagesCount = chatWithDetails.UnreadMessagesCount,
             };
 

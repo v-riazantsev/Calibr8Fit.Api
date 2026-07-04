@@ -11,6 +11,9 @@ namespace Calibr8Fit.Api.Models
         public bool IsAdmin { get; set; } = false;
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
 
+        public Guid? LastReadMessageId { get; set; }
+        public virtual ChatMessage? LastReadMessage { get; set; }
+
         public virtual ICollection<ChatMessage> SentMessages { get; set; } = [];
 
         (Guid, string) IEntity<(Guid, string)>.Id => (ChatId, UserId);

@@ -28,59 +28,94 @@ namespace Calibr8Fit.Api.Repository
                 .Where(c => c.Members.Any(m => m.UserId == userId))
                 .Select(c => new
                 {
+                    Chat = c,
+
+                    RequesterLastReadMessage = c.Members
+                        .Where(cm => cm.UserId == userId)
+                        .Select(cm => cm.LastReadMessage)
+                        .FirstOrDefault(),
+
+                    LastMessage = c.Messages
+                        .OrderByDescending(m => m.SentAt)
+                        .FirstOrDefault(),
+
+                    LastMessageSentAt = c.Messages.Max(m => (DateTime?)m.SentAt),
+
+                    MemberCount = c.Members.Count(),
+
+                    DirectMember = c.IsGroupChat
+                        ? null
+                        : c.Members
+                            .Where(m => m.UserId != userId)
+                            .Select(m => new DirectMemberDetails
+                            {
+                                UserName = m.User!.UserName,
+
+                                FirstName = m.User.Profile != null
+                                    ? m.User.Profile.FirstName
+                                    : null,
+
+                                LastName = m.User.Profile != null
+                                    ? m.User.Profile.LastName
+                                    : null,
+
+                                ProfilePictureFileName = m.User.Profile != null
+                                    ? m.User.Profile.ProfilePictureFileName
+                                    : null
+                            })
+                            .FirstOrDefault()
+                })
+                .Select(x => new
+                {
                     ChatWithDetails = new ChatWithDetails
                     {
-                        Chat = c,
+                        Chat = x.Chat,
 
-                        LastMessagePreview = c.Messages
-                            .OrderByDescending(m => m.SentAt)
-                            .Select(m => new ChatMessagePreview
+                        LastMessagePreview = x.LastMessage == null
+                            ? null
+                            : new ChatMessagePreview
                             {
-                                UserName = m.User!.UserName!,
-                                Content = m.Content,
-                                SentAt = m.SentAt,
-                                IsOwnMessage = m.UserId == userId,
-                                IsRead = m.UserId == userId
-                                    ? m.Reads.Any(r => r.UserId == userId)
-                                    : m.Reads.Any(r => r.UserId != userId)
-                            })
+                                UserName = x.LastMessage.User!.UserName!,
+                                Content = x.LastMessage.Content,
+                                SentAt = x.LastMessage.SentAt,
+                                IsOwnMessage = x.LastMessage.UserId == userId,
+
+                                IsReadByRequester = x.LastMessage.UserId == userId ||
+                                (
+                                    x.RequesterLastReadMessage != null &&
+                                    x.LastMessage.SentAt <= x.RequesterLastReadMessage.SentAt
+                                ),
+
+                                IsReadByOthers =
+                                    x.LastMessage.UserId == userId &&
+                                    x.Chat.Members.Any(cm =>
+                                        cm.UserId != userId &&
+                                        cm.LastReadMessage != null &&
+                                        cm.LastReadMessage.SentAt >= x.LastMessage.SentAt)
+                            },
+
+                        LastReadMessageId = x.Chat.Members
+                            .Where(cm => cm.UserId == userId)
+                            .Select(cm => cm.LastReadMessageId)
                             .FirstOrDefault(),
 
-                        UnreadMessagesCount = c.Messages.Count(m =>
+                        UnreadMessagesCount = x.Chat.Messages.Count(m =>
                             m.UserId != userId &&
-                            !m.Reads.Any(r => r.UserId == userId)),
+                            (
+                                x.RequesterLastReadMessage == null ||
+                                m.SentAt > x.RequesterLastReadMessage.SentAt
+                            )),
 
-                        MemberCount = c.Members.Count(),
+                        MemberCount = x.MemberCount,
 
-                        DirectMember = c.IsGroupChat
-                            ? null
-                            : c.Members
-                                .Where(m => m.UserId != userId)
-                                .Select(m => new DirectMemberDetails
-                                {
-                                    UserName = m.User!.UserName,
-
-                                    FirstName = m.User.Profile != null
-                                        ? m.User.Profile.FirstName
-                                        : null,
-
-                                    LastName = m.User.Profile != null
-                                        ? m.User.Profile.LastName
-                                        : null,
-
-                                    ProfilePictureFileName = m.User.Profile != null
-                                        ? m.User.Profile.ProfilePictureFileName
-                                        : null
-                                })
-                                .FirstOrDefault()
+                        DirectMember = x.DirectMember
                     },
 
-                    LastMessageSentAt = c.Messages.Max(m => (DateTime?)m.SentAt)
+                    x.LastMessageSentAt
                 })
                 .OrderByDescending(x => x.LastMessageSentAt ?? DateTime.MinValue)
                 .Select(x => x.ChatWithDetails)
                 .ToListAsync();
-
 
         public async Task<Chat?> GetDirectChatBetweenUsersAsync(string userId1, string userId2) =>
             await _dbSet
