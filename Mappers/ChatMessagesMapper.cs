@@ -43,7 +43,7 @@ namespace Calibr8Fit.Api.Mappers
                 Content = message.Content,
                 SentAt = message.SentAt,
                 IsOwnMessage = message.SenderUserId == currentUserId,
-                IsReadByRequester = message.IsReadByRequester,
+                IsReadByUser = message.IsReadByRequester,
                 IsReadByOthers = message.IsReadByOthers
             };
 

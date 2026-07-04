@@ -35,7 +35,7 @@ namespace Calibr8Fit.Api.Mappers
                 MemberCount = chatWithDetails.MemberCount,
                 LastMessage = chatWithDetails.LastMessagePreview != null ? new ChatMessagePreviewDto
                 {
-                    UserName = chatWithDetails.LastMessagePreview.UserName,
+                    SenderUserName = chatWithDetails.LastMessagePreview.UserName,
                     Content = chatWithDetails.LastMessagePreview.Content,
                     SentAt = chatWithDetails.LastMessagePreview.SentAt,
                     IsOwnMessage = chatWithDetails.LastMessagePreview.IsOwnMessage,

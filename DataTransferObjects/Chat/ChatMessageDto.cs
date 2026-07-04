@@ -10,7 +10,7 @@ namespace Calibr8Fit.Api.DataTransferObjects.Chat
         public required string Content { get; set; }
         public required DateTime SentAt { get; set; }
         public required bool IsOwnMessage { get; set; }
-        public required bool IsReadByRequester { get; set; }
+        public required bool IsReadByUser { get; set; }
         public required bool IsReadByOthers { get; set; }
     }
 }

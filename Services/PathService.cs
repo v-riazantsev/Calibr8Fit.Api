@@ -101,11 +101,15 @@ namespace Calibr8Fit.Api.Services
                 _options.ChatPath,
                 chatId.ToString()
             ));
-        public string? GetChatAvatarPath(Guid chatId) =>
-            Path.Combine(
+        public string? GetChatAvatarPath(Guid chatId)
+        {
+            var path = Path.Combine(
                 GetChatDirectoryPath(chatId),
                 _options.ChatAvatarName
             );
+
+            return File.Exists(path) ? path : null;
+        }
 
         public string? GetChatAvatarUrl(Guid chatId)
         {
