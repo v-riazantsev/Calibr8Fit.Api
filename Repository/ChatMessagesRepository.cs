@@ -87,15 +87,17 @@ namespace Calibr8Fit.Api.Repository
         public async Task<List<ChatMessageDetailed>> GetDetailedChatMessagesAsync(
             Guid chatId,
             string requesterUserId,
-            Guid before,
-            int pageSize
+            Guid? before,
+            int? pageSize
         )
         {
-            var beforeMessage = await _dbSet
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == before && m.ChatId == chatId);
+            var beforeMessage = before.HasValue
+                ? await _dbSet
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(m => m.Id == before && m.ChatId == chatId)
+                : null;
 
-            if (beforeMessage is null)
+            if (before.HasValue && beforeMessage is null)
                 throw new ArgumentException(
                     "The specified 'before' message ID does not exist in this chat.",
                     nameof(before)
@@ -103,9 +105,9 @@ namespace Calibr8Fit.Api.Repository
 
             return await _dbSet
                 .AsNoTracking()
-                .Where(m => m.ChatId == chatId && m.SentAt < beforeMessage.SentAt)
+                .Where(m => m.ChatId == chatId && (beforeMessage == null || m.SentAt < beforeMessage.SentAt))
                 .OrderByDescending(m => m.SentAt)
-                .Take(pageSize)
+                .Take(pageSize ?? int.MaxValue)
                 .Select(m => new ChatMessageDetailed
                 {
                     Id = m.Id,

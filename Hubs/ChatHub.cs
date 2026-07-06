@@ -22,6 +22,20 @@ namespace Calibr8Fit.Api.Hubs
                 var result = await _chatService.SendDirectMessageAsync(requestDto, user, createChatIfNotExists: true);
                 if (!result.Succeeded)
                     throw new HubException(string.Join("; ", result.Errors ?? ["Unknown error"]));
+                return result.Data;
+            });
+
+
+        [Authorize]
+        public Task SendChatMessage(SendChatMessageRequestDto requestDto) =>
+            WithUser(async user =>
+            {
+                Console.WriteLine($"[SendChatMessage] User {user.UserName} is sending a message to {requestDto.ChatId}: {requestDto.Content}");
+                // Send message (and create chat if it doesn't exist)
+                var result = await _chatService.SendChatMessageAsync(requestDto, user);
+                if (!result.Succeeded)
+                    throw new HubException(string.Join("; ", result.Errors ?? ["Unknown error"]));
+                return result.Data;
             });
 
         [Authorize]

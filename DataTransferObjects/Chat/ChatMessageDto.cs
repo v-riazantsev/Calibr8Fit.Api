@@ -1,16 +1,26 @@
 using Calibr8Fit.Api.DataTransferObjects.User;
 
+// TODO: use record for every DTO?
 namespace Calibr8Fit.Api.DataTransferObjects.Chat
 {
-    public class ChatMessageDto
+    public record class ChatMessageDto
     {
-        public required Guid Id { get; set; }
-        public required Guid ChatId { get; set; }
-        public required UserSummaryDto Sender { get; set; }
-        public required string Content { get; set; }
-        public required DateTime SentAt { get; set; }
-        public required bool IsOwnMessage { get; set; }
-        public required bool IsReadByUser { get; set; }
-        public required bool IsReadByOthers { get; set; }
+        public required Guid Id { get; init; }
+        public required Guid ChatId { get; init; }
+        public required UserSummaryDto Sender { get; init; }
+        public required string Content { get; init; }
+        public required DateTime SentAt { get; init; }
+        public required bool IsOwnMessage { get; init; }
+        public required bool IsReadByUser { get; init; }
+        public required bool IsReadByOthers { get; init; }
+
+        public ChatMessageDto CopyForRecipient()
+        {
+            return this with
+            {
+                IsOwnMessage = false,
+                IsReadByUser = false
+            };
+        }
     }
 }

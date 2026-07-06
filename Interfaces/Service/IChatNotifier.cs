@@ -4,6 +4,9 @@ namespace Calibr8Fit.Api.Interfaces.Service
 {
     public interface IChatNotifier
     {
-        Task NotifyDirectMessageAsync(string senderUsername, string recipientUsername, ChatMessageDto message);
+        Task NotifyDirectMessageAsync(string recipientUsername, ChatMessageDto message);
+        Task NotifyChatMessageAsync(IEnumerable<string> recipientUsernames, ChatMessageDto message);
+        Task NotifyChatMessageAsync(string recipientUsername, ChatMessageDto message) =>
+            NotifyChatMessageAsync(recipientUsername, message);
     }
 }

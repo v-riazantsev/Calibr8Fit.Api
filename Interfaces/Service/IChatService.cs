@@ -12,6 +12,10 @@ namespace Calibr8Fit.Api.Interfaces.Service
             User sender,
             bool createChatIfNotExists = true
         );
+        Task<Result<ChatMessageDto>> SendChatMessageAsync(
+            SendChatMessageRequestDto requestDto,
+            User sender
+        );
         Task<Result<IEnumerable<ChatMessageDto>>> GetDirectMessagesAsync(
             string userId,
             string otherUserName,

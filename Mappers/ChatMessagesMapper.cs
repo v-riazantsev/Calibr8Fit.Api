@@ -15,7 +15,7 @@ namespace Calibr8Fit.Api.Mappers
                 ChatId = request.ChatId,
                 UserId = senderUserId,
                 Content = request.Content,
-                SentAt = request.SendedAt
+                SentAt = request.SentAt
             };
 
         public static ChatMessage ToChatMessage(this SendDirectMessageRequestDto request, string senderUserId, Guid chatId) =>
@@ -42,7 +42,7 @@ namespace Calibr8Fit.Api.Mappers
                 },
                 Content = message.Content,
                 SentAt = message.SentAt,
-                IsOwnMessage = message.SenderUserId == currentUserId,
+                IsOwnMessage = message.IsOwnMessage,
                 IsReadByUser = message.IsReadByRequester,
                 IsReadByOthers = message.IsReadByOthers
             };

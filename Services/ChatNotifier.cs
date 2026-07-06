@@ -11,15 +11,30 @@ namespace Calibr8Fit.Api.Services
     {
         private readonly IHubContext<ChatHub> _hub = hub;
 
-        public async Task NotifyDirectMessageAsync(string senderUsername, string recipientUsername, ChatMessageDto message)
+        public async Task NotifyDirectMessageAsync(string recipientUsername, ChatMessageDto message)
         {
+            // Sender gets server-ack
+            await _hub.Clients.Group(message.Sender.UserName)
+                .SendAsync("MessageSent", message);
+
             // Recipient gets incoming message
             await _hub.Clients.Group(recipientUsername)
-                .SendAsync("MessageIncoming", message);
-
-            // Sender gets server-ack
-            await _hub.Clients.Group(senderUsername)
-                .SendAsync("MessageSent", message);
+                .SendAsync("MessageIncoming", message.CopyForRecipient());
         }
+
+        public async Task NotifyChatMessageAsync(IEnumerable<string> recipientUsernames, ChatMessageDto message)
+        {
+            // Sender gets server-ack
+            await _hub.Clients.Group(message.Sender.UserName)
+                .SendAsync("MessageSent", message);
+
+            // Recipients get incoming message
+            foreach (var recipientUsername in recipientUsernames)
+            {
+                await _hub.Clients.Group(recipientUsername)
+                    .SendAsync("MessageIncoming", message.CopyForRecipient());
+            }
+        }
+
     }
 }

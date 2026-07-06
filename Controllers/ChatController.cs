@@ -14,6 +14,14 @@ namespace Calibr8Fit.Api.Controllers
     {
         private readonly IChatService _chatService = chatService;
 
+        [HttpPost("chat-message")]
+        public Task<IActionResult> SendChatMessage([FromBody] SendChatMessageRequestDto requestDto) =>
+            WithUser(async user =>
+            {
+                var result = await _chatService.SendChatMessageAsync(requestDto, user);
+                return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            });
+
         [HttpPost("direct")]
         public Task<IActionResult> SendDirectMessage([FromBody] SendDirectMessageRequestDto requestDto) =>
             WithUser(async user =>
@@ -49,6 +57,7 @@ namespace Calibr8Fit.Api.Controllers
             ) =>
             WithUserId(async userId =>
             {
+                Console.WriteLine($"GetChatMessages called with chatId: {chatId}, before: {before}, size: {size}");
                 var result = await _chatService.GetChatMessagesAsync(chatId, userId, before, size);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });

@@ -8,7 +8,7 @@ namespace Calibr8Fit.Api.DataTransferObjects.Chat
         [Required]
         public required Guid ChatId { get; set; }
         [Required]
-        public string Content { get; set; } = string.Empty;
-        public DateTime SendedAt { get; set; } = DateTime.UtcNow;
+        public required string Content { get; set; } = string.Empty;
+        public DateTime SentAt { get; set; } = DateTime.UtcNow;
     }
 }

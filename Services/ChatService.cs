@@ -71,12 +71,39 @@ namespace Calibr8Fit.Api.Services
 
             // Notify recipient and sender devices via SignalR
             await _chatNotifier.NotifyDirectMessageAsync(
-                senderUsername: sender.UserName!,
                 recipientUsername: recipientUser.UserName!,
                 message: chatMessageDto
             );
 
             // TODO: Send push notification 
+
+            return Result<ChatMessageDto>.Success(chatMessageDto);
+        }
+
+        public async Task<Result<ChatMessageDto>> SendChatMessageAsync(SendChatMessageRequestDto requestDto, User sender)
+        {
+            // Try to get existing chat by ID
+            var chat = await _chatRepository.GetAsync(requestDto.ChatId);
+            if (chat is null)
+                return Result<ChatMessageDto>.Failure("Chat not found.");
+
+            // Check if sender is a member of the chat
+            if (!await _chatMemberRepository.KeyExistsAsync(requestDto.ChatId, sender.Id))
+                return Result<ChatMessageDto>.Failure("Sender is not a member of the chat.");
+
+            // Create new chat message
+            var createdMessage = await _chatMessageRepository.AddAndReturnDetailedAsync(requestDto.ToChatMessage(sender.Id));
+            if (createdMessage is null)
+                return Result<ChatMessageDto>.Failure("Failed to send message.");
+
+            var chatMessageDto = createdMessage.ToChatMessageDto(sender.UserName!, _pathService);
+
+            // Notify all chat members via SignalR
+            var memberUsernames = chat.Members.Select(m => m.User!.UserName!).ToList();
+            await _chatNotifier.NotifyChatMessageAsync(
+                recipientUsernames: [.. memberUsernames.Where(u => u != sender.UserName!)],
+                message: chatMessageDto
+            );
 
             return Result<ChatMessageDto>.Success(chatMessageDto);
         }
@@ -103,9 +130,8 @@ namespace Calibr8Fit.Api.Services
             int? pageSize = null
         )
         {
-            var messages = before.HasValue && pageSize.HasValue
-                ? await _chatMessageRepository.GetDetailedChatMessagesAsync(chatId, userId, before.Value, pageSize.Value)
-                : await _chatMessageRepository.GetDetailedChatMessagesAsync(chatId, userId);
+            Console.WriteLine($"GetChatMessagesAsync called with chatId: {chatId}, userId: {userId}, before: {before}, pageSize: {pageSize}");
+            var messages = await _chatMessageRepository.GetDetailedChatMessagesAsync(chatId, userId, before, pageSize);
 
             return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos(userId, _pathService));
         }
