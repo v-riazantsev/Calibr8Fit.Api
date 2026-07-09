@@ -21,36 +21,40 @@ namespace Calibr8Fit.Api.Mappers
         public static IEnumerable<ChatDto> ToChatDtos(this IEnumerable<Chat> chats, IPathService pathService) =>
             chats.Select(c => c.ToChatDto(pathService));
 
-        public static ChatPreviewDto ToChatPreviewDto(this ChatWithDetails c, IPathService pathService) =>
+        public static ChatPreviewDto ToChatPreviewDto(
+            this ChatWithDetails c,
+            IChatActivityTracker chatActivityTracker,
+            string currentUserName,
+            IPathService pathService) =>
             new()
             {
                 Id = c.Chat.Id,
                 DisplayName = c.Chat.Name ??
                     (!c.Chat.IsGroupChat ?
-                    $"{c.DirectMember!.FirstName} {c.DirectMember!.LastName}"
+                    $"{c.DirectMember!.Profile!.FirstName} {c.DirectMember!.Profile!.LastName}"
                     : "Group Chat"),
                 IsGroupChat = c.Chat.IsGroupChat,
                 AvatarUrl = c.Chat.IsGroupChat
                     ? pathService.GetChatAvatarUrl(c.Chat.Id)
-                    : c.DirectMember!.ProfilePictureFileName is not null
-                        ? pathService.GetProfilePictureUrl(c.DirectMember!.UserName!, c.DirectMember!.ProfilePictureFileName!)
+                    : c.DirectMember!.Profile!.ProfilePictureFileName is not null
+                        ? pathService.GetProfilePictureUrl(c.DirectMember!.UserName!, c.DirectMember!.Profile!.ProfilePictureFileName)
                         : null,
                 CreatedAt = c.Chat.CreatedAt,
                 MemberCount = c.MemberCount,
-                LastMessage = c.LastMessagePreview != null ? new ChatMessagePreviewDto
-                {
-                    SenderUserName = c.LastMessagePreview.UserName,
-                    Content = c.LastMessagePreview.Content,
-                    SentAt = c.LastMessagePreview.SentAt,
-                    IsOwnMessage = c.LastMessagePreview.IsOwnMessage,
-                    IsReadByUser = c.LastMessagePreview.IsReadByRequester,
-                    IsReadByOthers = c.LastMessagePreview.IsReadByOthers
-                } : null,
-                LastReadMessageId = c.LastReadMessageId,
+                LastMessage = c.LastMessage?.ToChatMessageDto(currentUserName, pathService),
+                LastReadByUserMessageSentAt = c.LastReadByRequesterMessageSentAt,
+                LastReadByOtherMembersMessageSentAt = c.LastReadByOtherMembersMessageSentAt,
                 UnreadMessagesCount = c.UnreadMessagesCount,
+                DirectMember = c.DirectMember?.ToUserSummaryDto(pathService),
+                TypingUsernames = chatActivityTracker.GetTypingUsernames(c.Chat.Id, currentUserName)
             };
 
-        public static IEnumerable<ChatPreviewDto> ToChatPreviewDtos(this IEnumerable<ChatWithDetails> chats, IPathService pathService) =>
-            chats.Select(c => c.ToChatPreviewDto(pathService));
+        public static IEnumerable<ChatPreviewDto> ToChatPreviewDtos(
+            this IEnumerable<ChatWithDetails> chats,
+            IPathService pathService,
+            IChatActivityTracker chatActivityTracker,
+            string currentUserName
+            ) =>
+            chats.Select(c => c.ToChatPreviewDto(chatActivityTracker, currentUserName, pathService));
     }
 }

@@ -47,22 +47,7 @@ namespace Calibr8Fit.Api.Repository
                         ? null
                         : c.Members
                             .Where(m => m.UserId != userId)
-                            .Select(m => new DirectMemberDetails
-                            {
-                                UserName = m.User!.UserName,
-
-                                FirstName = m.User.Profile != null
-                                    ? m.User.Profile.FirstName
-                                    : null,
-
-                                LastName = m.User.Profile != null
-                                    ? m.User.Profile.LastName
-                                    : null,
-
-                                ProfilePictureFileName = m.User.Profile != null
-                                    ? m.User.Profile.ProfilePictureFileName
-                                    : null
-                            })
+                            .Select(m => m.User)
                             .FirstOrDefault()
                 })
                 .Select(x => new
@@ -71,32 +56,43 @@ namespace Calibr8Fit.Api.Repository
                     {
                         Chat = x.Chat,
 
-                        LastMessagePreview = x.LastMessage == null
+                        LastMessage = x.LastMessage == null
                             ? null
-                            : new ChatMessagePreview
+                            : new ChatMessageDetailed
                             {
-                                UserName = x.LastMessage.User!.UserName!,
+                                Id = x.LastMessage.Id,
+                                ChatId = x.LastMessage.ChatId,
+                                Sender = x.LastMessage.User!,
                                 Content = x.LastMessage.Content,
                                 SentAt = x.LastMessage.SentAt,
-                                IsOwnMessage = x.LastMessage.UserId == userId,
-
-                                IsReadByRequester = x.LastMessage.UserId == userId ||
-                                (
-                                    x.RequesterLastReadMessage != null &&
-                                    x.LastMessage.SentAt <= x.RequesterLastReadMessage.SentAt
-                                ),
-
-                                IsReadByOthers =
-                                    x.LastMessage.UserId == userId &&
-                                    x.Chat.Members.Any(cm =>
-                                        cm.UserId != userId &&
-                                        cm.LastReadMessage != null &&
-                                        cm.LastReadMessage.SentAt >= x.LastMessage.SentAt)
+                                IsOwnMessage = x.LastMessage.UserId == userId
+                                // IsReadByOthers =
+                                //     x.LastMessage.UserId == userId &&
+                                //     x.Chat.Members.Any(cm =>
+                                //         cm.UserId != userId &&
+                                //         cm.LastReadMessage != null &&
+                                //         cm.LastReadMessage.SentAt >= x.LastMessage.SentAt)
                             },
+                        // LastMessagePreview = x.LastMessage == null
+                        //     ? null
+                        //     : new ChatMessagePreview
+                        //     {
+                        //         UserName = x.LastMessage.User!.UserName!,
+                        //         Content = x.LastMessage.Content,
+                        //         SentAt = x.LastMessage.SentAt,
+                        //         IsOwnMessage = x.LastMessage.UserId == userId,
 
-                        LastReadMessageId = x.Chat.Members
-                            .Where(cm => cm.UserId == userId)
-                            .Select(cm => cm.LastReadMessageId)
+                        //         IsReadByOthers =
+                        //             x.LastMessage.UserId == userId &&
+                        //             x.Chat.Members.Any(cm =>
+                        //                 cm.UserId != userId &&
+                        //                 cm.LastReadMessage != null &&
+                        //                 cm.LastReadMessage.SentAt >= x.LastMessage.SentAt)
+                        //     },
+
+                        LastReadByRequesterMessageSentAt = x.Chat.Members
+                            .Where(cm => cm.UserId == userId && cm.LastReadMessage != null)
+                            .Select(cm => cm.LastReadMessage!.SentAt)
                             .FirstOrDefault(),
 
                         UnreadMessagesCount = x.Chat.Messages.Count(m =>
@@ -105,6 +101,15 @@ namespace Calibr8Fit.Api.Repository
                                 x.RequesterLastReadMessage == null ||
                                 m.SentAt > x.RequesterLastReadMessage.SentAt
                             )),
+
+                        LastReadByOtherMembersMessageSentAt = x.Chat.Members
+                            .Where(cm =>
+                                cm.UserId != userId &&
+                                cm.LastReadMessage != null &&
+                                cm.LastReadMessage.UserId == cm.UserId)
+                            .Select(cm => cm.LastReadMessage!.SentAt)
+                            .OrderByDescending(sentAt => sentAt)
+                            .FirstOrDefault(),
 
                         MemberCount = x.MemberCount,
 

@@ -11,15 +11,12 @@ namespace Calibr8Fit.Api.DataTransferObjects.Chat
         public required string Content { get; init; }
         public required DateTime SentAt { get; init; }
         public required bool IsOwnMessage { get; init; }
-        public required bool IsReadByUser { get; init; }
-        public required bool IsReadByOthers { get; init; }
 
         public ChatMessageDto CopyForRecipient()
         {
             return this with
             {
-                IsOwnMessage = false,
-                IsReadByUser = false
+                IsOwnMessage = false
             };
         }
     }

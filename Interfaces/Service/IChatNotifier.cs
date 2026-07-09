@@ -1,12 +1,12 @@
 using Calibr8Fit.Api.DataTransferObjects.Chat;
+using Calibr8Fit.Api.DataTransferObjects.Chat.Read;
 
 namespace Calibr8Fit.Api.Interfaces.Service
 {
     public interface IChatNotifier
     {
-        Task NotifyDirectMessageAsync(string recipientUsername, ChatMessageDto message);
-        Task NotifyChatMessageAsync(IEnumerable<string> recipientUsernames, ChatMessageDto message);
-        Task NotifyChatMessageAsync(string recipientUsername, ChatMessageDto message) =>
-            NotifyChatMessageAsync(recipientUsername, message);
+        Task NotifyMessageSentAsync(string senderUsername, ChatMessageDto message);
+        Task NotifyMessageIncomingAsync(string recipientUsername, ChatMessageDto message);
+        Task NotifyMessagesReadAsync(string senderUsername, ChatReadDto readDto);
     }
 }

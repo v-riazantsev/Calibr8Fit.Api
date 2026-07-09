@@ -11,5 +11,8 @@ namespace Calibr8Fit.Api.Interfaces.Repository
         Task<List<ChatMessageDetailed>> GetDetailedChatMessagesAsync(Guid chatId, string requesterUserId, Guid? before, int? pageSize);
         Task<List<ChatMessageDetailed>> GetDetailedDirectChatMessagesAsync(string requesterUserId, string otherUserId);
         Task<List<ChatMessageDetailed>> GetDetailedDirectChatMessagesAsync(string requesterUserId, string otherUserId, Guid before, int pageSize);
+        Task<ChatMember?> MarkMessagesAsReadAsync(Guid fromMessageId, string userId);
+        Task<ChatMessage?> GetLastReadByOtherMessageAsync(Guid chatId, string requesterUserId);
+        Task<List<ChatMessage>> GetLatestUnreadMessagesForEachSenderBeforeAsync(Guid chatId, string requesterUserId, DateTime before);
     }
 }

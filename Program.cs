@@ -76,6 +76,10 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IChatNotifier, ChatNotifier>();
 
+// Singleton Services
+builder.Services.AddSingleton<IOnlineTracker, OnlineTracker>();
+builder.Services.AddSingleton<IChatActivityTracker, ChatActivityTracker>();
+
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserRepositoryBase<RefreshToken, string[]>, UserRepositoryBase<RefreshToken, string[]>>();
@@ -127,6 +131,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.MapControllers();
-app.MapHub<ChatHub>("/hubs/chat");
+app.MapHub<MessengerHub>("/hubs/chat");
 
 app.Run();

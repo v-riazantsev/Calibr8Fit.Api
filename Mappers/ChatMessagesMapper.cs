@@ -31,20 +31,19 @@ namespace Calibr8Fit.Api.Mappers
             {
                 Id = message.Id,
                 ChatId = message.ChatId,
-                Sender = new UserSummaryDto
-                {
-                    UserName = message.SenderUserName,
-                    FirstName = message.SenderFirstName,
-                    LastName = message.SenderLastName,
-                    ProfilePictureUrl = message.SenderProfilePictureFileName is not null
-                        ? pathService.GetProfilePictureUrl(message.SenderUserName, message.SenderProfilePictureFileName)
-                        : null
-                },
+                Sender = message.Sender.ToUserSummaryDto(pathService),
+                // Sender = new UserSummaryDto
+                // {
+                //     UserName = message.SenderUserName,
+                //     FirstName = message.SenderFirstName,
+                //     LastName = message.SenderLastName,
+                //     ProfilePictureUrl = message.SenderProfilePictureFileName is not null
+                //         ? pathService.GetProfilePictureUrl(message.SenderUserName, message.SenderProfilePictureFileName)
+                //         : null
+                // },
                 Content = message.Content,
                 SentAt = message.SentAt,
                 IsOwnMessage = message.IsOwnMessage,
-                IsReadByUser = message.IsReadByRequester,
-                IsReadByOthers = message.IsReadByOthers
             };
 
         public static IEnumerable<ChatMessageDto> ToChatMessageDtos(

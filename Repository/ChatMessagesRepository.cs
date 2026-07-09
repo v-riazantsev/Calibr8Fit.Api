@@ -27,18 +27,19 @@ namespace Calibr8Fit.Api.Repository
                 {
                     Id = m.Id,
                     ChatId = m.ChatId,
-                    SenderUserId = m.UserId,
-                    SenderUserName = m.User!.UserName!,
-                    SenderFirstName = m.User.Profile!.FirstName,
-                    SenderLastName = m.User.Profile.LastName,
-                    SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
+                    Sender = m.User!,
+                    // SenderUserId = m.UserId,
+                    // SenderUserName = m.User!.UserName!,
+                    // SenderFirstName = m.User.Profile!.FirstName,
+                    // SenderLastName = m.User.Profile.LastName,
+                    // SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
 
                     Content = m.Content,
                     SentAt = m.SentAt,
 
                     IsOwnMessage = true,
-                    IsReadByRequester = true,
-                    IsReadByOthers = false
+                    // IsReadByRequester = true,
+                    //IsReadByOthers = false
                 })
                 .FirstOrDefaultAsync();
         }
@@ -56,30 +57,31 @@ namespace Calibr8Fit.Api.Repository
                 {
                     Id = m.Id,
                     ChatId = m.ChatId,
-                    SenderUserId = m.UserId,
-                    SenderUserName = m.User!.UserName!,
-                    SenderFirstName = m.User.Profile!.FirstName,
-                    SenderLastName = m.User.Profile.LastName,
-                    SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
+                    Sender = m.User!,
+                    // SenderUserId = m.UserId,
+                    // SenderUserName = m.User!.UserName!,
+                    // SenderFirstName = m.User.Profile!.FirstName,
+                    // SenderLastName = m.User.Profile.LastName,
+                    // SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
 
                     Content = m.Content,
                     SentAt = m.SentAt,
 
                     IsOwnMessage = m.UserId == requesterUserId,
 
-                    IsReadByRequester =
-                        m.UserId == requesterUserId ||
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId == requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt),
+                    // IsReadByRequester =
+                    //     m.UserId == requesterUserId ||
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId == requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt),
 
-                    IsReadByOthers =
-                        m.UserId == requesterUserId &&
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId != requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt)
+                    // IsReadByOthers =
+                    //     m.UserId == requesterUserId &&
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId != requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt)
                 })
                 .ToListAsync();
         }
@@ -112,30 +114,31 @@ namespace Calibr8Fit.Api.Repository
                 {
                     Id = m.Id,
                     ChatId = m.ChatId,
-                    SenderUserId = m.UserId,
-                    SenderUserName = m.User!.UserName!,
-                    SenderFirstName = m.User.Profile!.FirstName,
-                    SenderLastName = m.User.Profile.LastName,
-                    SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
+                    Sender = m.User!,
+                    // SenderUserId = m.UserId,
+                    // SenderUserName = m.User!.UserName!,
+                    // SenderFirstName = m.User.Profile!.FirstName,
+                    // SenderLastName = m.User.Profile.LastName,
+                    // SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
 
                     Content = m.Content,
                     SentAt = m.SentAt,
 
                     IsOwnMessage = m.UserId == requesterUserId,
 
-                    IsReadByRequester =
-                        m.UserId == requesterUserId ||
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId == requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt),
+                    // IsReadByRequester =
+                    //     m.UserId == requesterUserId ||
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId == requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt),
 
-                    IsReadByOthers =
-                        m.UserId == requesterUserId &&
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId != requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt)
+                    // IsReadByOthers =
+                    //     m.UserId == requesterUserId &&
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId != requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt)
                 })
                 .ToListAsync();
         }
@@ -157,30 +160,31 @@ namespace Calibr8Fit.Api.Repository
                 {
                     Id = m.Id,
                     ChatId = m.ChatId,
-                    SenderUserId = m.UserId,
-                    SenderUserName = m.User!.UserName!,
-                    SenderFirstName = m.User.Profile!.FirstName,
-                    SenderLastName = m.User.Profile.LastName,
-                    SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
+                    Sender = m.User!,
+                    // SenderUserId = m.UserId,
+                    // SenderUserName = m.User!.UserName!,
+                    // SenderFirstName = m.User.Profile!.FirstName,
+                    // SenderLastName = m.User.Profile.LastName,
+                    // SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
 
                     Content = m.Content,
                     SentAt = m.SentAt,
 
                     IsOwnMessage = m.UserId == requesterUserId,
 
-                    IsReadByRequester =
-                        m.UserId == requesterUserId ||
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId == requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt),
+                    // IsReadByRequester =
+                    //     m.UserId == requesterUserId ||
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId == requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt),
 
-                    IsReadByOthers =
-                        m.UserId == requesterUserId &&
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId != requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt)
+                    // IsReadByOthers =
+                    //     m.UserId == requesterUserId &&
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId != requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt)
                 })
                 .ToListAsync();
         }
@@ -228,32 +232,89 @@ namespace Calibr8Fit.Api.Repository
                 {
                     Id = m.Id,
                     ChatId = m.ChatId,
-                    SenderUserId = m.UserId,
-                    SenderUserName = m.User!.UserName!,
-                    SenderFirstName = m.User.Profile!.FirstName,
-                    SenderLastName = m.User.Profile.LastName,
-                    SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
+                    Sender = m.User!,
+                    // SenderUserId = m.UserId,
+                    // SenderUserName = m.User!.UserName!,
+                    // SenderFirstName = m.User.Profile!.FirstName,
+                    // SenderLastName = m.User.Profile.LastName,
+                    // SenderProfilePictureFileName = m.User.Profile.ProfilePictureFileName,
 
                     Content = m.Content,
                     SentAt = m.SentAt,
 
                     IsOwnMessage = m.UserId == requesterUserId,
 
-                    IsReadByRequester =
-                        m.UserId == requesterUserId ||
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId == requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt),
+                    // IsReadByRequester =
+                    //     m.UserId == requesterUserId ||
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId == requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt),
 
-                    IsReadByOthers =
-                        m.UserId == requesterUserId &&
-                        m.Chat!.Members.Any(cm =>
-                            cm.UserId != requesterUserId &&
-                            cm.LastReadMessage != null &&
-                            cm.LastReadMessage.SentAt >= m.SentAt)
+                    // IsReadByOthers =
+                    //     m.UserId == requesterUserId &&
+                    //     m.Chat!.Members.Any(cm =>
+                    //         cm.UserId != requesterUserId &&
+                    //         cm.LastReadMessage != null &&
+                    //         cm.LastReadMessage.SentAt >= m.SentAt)
                 })
                 .ToListAsync();
         }
+
+        public async Task<ChatMember?> MarkMessagesAsReadAsync(Guid fromMessageId, string userId)
+        {
+            var fromMessage = await _dbSet
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == fromMessageId);
+
+            if (fromMessage is null)
+                return null;
+
+            var chatMember = await _dbContext.ChatMembers
+                .FirstOrDefaultAsync(cm => cm.ChatId == fromMessage.ChatId && cm.UserId == userId);
+
+            if (chatMember is null)
+                return null;
+
+            chatMember.LastReadMessageId = fromMessageId;
+            await base.SaveChangesAsync();
+
+            return chatMember;
+        }
+
+        public async Task<ChatMessage?> GetLastReadByOtherMessageAsync(Guid chatId, string requesterUserId) =>
+            await _dbContext.ChatMembers
+                .AsNoTracking()
+                .Where(cm => cm.ChatId == chatId && cm.UserId != requesterUserId)
+                .Select(cm => cm.LastReadMessage)
+                .OrderByDescending(m => m!.SentAt)
+                .FirstOrDefaultAsync();
+
+        public async Task<List<ChatMessage>> GetLatestUnreadMessagesForEachSenderBeforeAsync(
+            Guid chatId,
+            string requesterUserId,
+            DateTime before) =>
+                await _dbSet
+                    .AsNoTracking()
+                    .Include(m => m.SenderMembership!)
+                        .ThenInclude(cm => cm.User)
+                    .Where(m =>
+                        m.ChatId == chatId &&
+                        m.UserId != requesterUserId &&
+                        m.SentAt <= before &&
+                        !m.Deleted &&
+
+                        // Message is unread if NO member other than the sender
+                        // has LastReadMessage >= this message.
+                        !_dbContext.ChatMembers.Any(cm =>
+                            cm.ChatId == chatId &&
+                            cm.UserId != m.UserId &&
+                            cm.LastReadMessage != null &&
+                            cm.LastReadMessage.SentAt >= m.SentAt))
+                    .GroupBy(m => m.UserId)
+                    .Select(g => g
+                        .OrderByDescending(m => m.SentAt)
+                        .First())
+                    .ToListAsync();
     }
 }

@@ -1,4 +1,5 @@
 using Calibr8Fit.Api.DataTransferObjects.Chat;
+using Calibr8Fit.Api.DataTransferObjects.Chat.Read;
 using Calibr8Fit.Api.Hubs;
 using Calibr8Fit.Api.Interfaces.Service;
 using Microsoft.AspNetCore.SignalR;
@@ -6,35 +7,40 @@ using Microsoft.AspNetCore.SignalR;
 namespace Calibr8Fit.Api.Services
 {
     public class ChatNotifier(
-        IHubContext<ChatHub> hub
-    ) : IChatNotifier
+    IHubContext<MessengerHub> hub)
+    : IChatNotifier
     {
-        private readonly IHubContext<ChatHub> _hub = hub;
+        private readonly IHubContext<MessengerHub> _hub = hub;
+        private static string UserGroup(string username) => $"user:{username}";
 
-        public async Task NotifyDirectMessageAsync(string recipientUsername, ChatMessageDto message)
+
+        public Task NotifyMessageIncomingAsync(
+            string recipientUsername,
+            ChatMessageDto message)
         {
-            // Sender gets server-ack
-            await _hub.Clients.Group(message.Sender.UserName)
-                .SendAsync("MessageSent", message);
+            Console.WriteLine($"Sending to {UserGroup(recipientUsername)}");
 
-            // Recipient gets incoming message
-            await _hub.Clients.Group(recipientUsername)
+            return _hub.Clients
+                .Group(UserGroup(recipientUsername))
                 .SendAsync("MessageIncoming", message.CopyForRecipient());
         }
 
-        public async Task NotifyChatMessageAsync(IEnumerable<string> recipientUsernames, ChatMessageDto message)
+        public Task NotifyMessageSentAsync(
+            string senderUsername,
+            ChatMessageDto message)
         {
-            // Sender gets server-ack
-            await _hub.Clients.Group(message.Sender.UserName)
+            return _hub.Clients
+                .Group(UserGroup(senderUsername))
                 .SendAsync("MessageSent", message);
-
-            // Recipients get incoming message
-            foreach (var recipientUsername in recipientUsernames)
-            {
-                await _hub.Clients.Group(recipientUsername)
-                    .SendAsync("MessageIncoming", message.CopyForRecipient());
-            }
         }
 
+        public Task NotifyMessagesReadAsync(
+            string senderUsername,
+            ChatReadDto dto)
+        {
+            return _hub.Clients
+                .Group(UserGroup(senderUsername))
+                .SendAsync("MessagesRead", dto);
+        }
     }
 }
