@@ -66,29 +66,7 @@ namespace Calibr8Fit.Api.Repository
                                 Content = x.LastMessage.Content,
                                 SentAt = x.LastMessage.SentAt,
                                 IsOwnMessage = x.LastMessage.UserId == userId
-                                // IsReadByOthers =
-                                //     x.LastMessage.UserId == userId &&
-                                //     x.Chat.Members.Any(cm =>
-                                //         cm.UserId != userId &&
-                                //         cm.LastReadMessage != null &&
-                                //         cm.LastReadMessage.SentAt >= x.LastMessage.SentAt)
                             },
-                        // LastMessagePreview = x.LastMessage == null
-                        //     ? null
-                        //     : new ChatMessagePreview
-                        //     {
-                        //         UserName = x.LastMessage.User!.UserName!,
-                        //         Content = x.LastMessage.Content,
-                        //         SentAt = x.LastMessage.SentAt,
-                        //         IsOwnMessage = x.LastMessage.UserId == userId,
-
-                        //         IsReadByOthers =
-                        //             x.LastMessage.UserId == userId &&
-                        //             x.Chat.Members.Any(cm =>
-                        //                 cm.UserId != userId &&
-                        //                 cm.LastReadMessage != null &&
-                        //                 cm.LastReadMessage.SentAt >= x.LastMessage.SentAt)
-                        //     },
 
                         LastReadByRequesterMessageSentAt = x.Chat.Members
                             .Where(cm => cm.UserId == userId && cm.LastReadMessage != null)
@@ -106,7 +84,7 @@ namespace Calibr8Fit.Api.Repository
                             .Where(cm =>
                                 cm.UserId != userId &&
                                 cm.LastReadMessage != null &&
-                                cm.LastReadMessage.UserId == cm.UserId)
+                                cm.LastReadMessage.UserId == userId)
                             .Select(cm => cm.LastReadMessage!.SentAt)
                             .OrderByDescending(sentAt => sentAt)
                             .FirstOrDefault(),
