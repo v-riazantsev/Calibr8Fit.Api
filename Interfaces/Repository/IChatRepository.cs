@@ -8,6 +8,7 @@ namespace Calibr8Fit.Api.Interfaces.Repository
     {
         Task<List<Chat>> GetUserChatsAsync(string userId);
         Task<Chat?> GetDirectChatBetweenUsersAsync(string userId1, string userId2);
+        Task<ChatWithDetails?> GetChatWithDetailsAsync(Guid chatId, string userId);
         Task<List<ChatWithDetails>> GetUserChatsWithDetailsAsync(string userId);
     }
 }

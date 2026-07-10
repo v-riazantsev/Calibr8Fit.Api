@@ -15,7 +15,6 @@ namespace Calibr8Fit.Api.Services
         IChatMessagesRepository chatMessageRepository,
         IUserRepository userRepository,
         IPathService pathService,
-        IOnlineTracker onlineTracker,
         IChatActivityTracker chatActivityTracker
     ) : IChatService
     {
@@ -24,10 +23,9 @@ namespace Calibr8Fit.Api.Services
         private readonly IChatMessagesRepository _chatMessageRepository = chatMessageRepository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IPathService _pathService = pathService;
-        private readonly IOnlineTracker _onlineTracker = onlineTracker;
         private readonly IChatActivityTracker _chatActivityTracker = chatActivityTracker;
 
-        public async Task<Chat> CreateDirectChatAsync(string userId, string otherUserId)
+        private async Task<Chat> CreateDirectChatAsync(string userId, string otherUserId)
         {
             // Check if a direct chat already exists between the two users
             if (await _chatRepository.GetDirectChatBetweenUsersAsync(userId, otherUserId) is not null)
@@ -45,6 +43,37 @@ namespace Calibr8Fit.Api.Services
                 ]
             }) ?? throw new Exception("Failed to create direct chat.");
             return chat;
+        }
+
+        public async Task<Result<ChatPreviewDto>> GetDirectChatWithUsernameAsync(string userId, string otherUserName)
+        {
+            // Try to get recipient user by username
+            var recipientUser = await _userRepository.GetByUsernameAsync(otherUserName);
+            if (recipientUser is null)
+                return Result<ChatPreviewDto>.Failure("Recipient user not found.");
+
+            var chat = await _chatRepository.GetDirectChatBetweenUsersAsync(userId, recipientUser.Id);
+            if (chat is null)
+            {
+                try
+                {
+                    // Create new direct chat
+                    chat = await CreateDirectChatAsync(userId, recipientUser.Id);
+                }
+                catch (Exception ex)
+                {
+                    return Result<ChatPreviewDto>.Failure(ex.Message);
+                }
+            }
+
+            // Return the chat preview DTO for the direct chat
+            var chatWithDetails = await _chatRepository.GetChatWithDetailsAsync(chat.Id, userId);
+
+            if (chatWithDetails is null)
+                return Result<ChatPreviewDto>.Failure("Failed to retrieve chat details.");
+
+            return Result<ChatPreviewDto>.Success(
+                chatWithDetails.ToChatPreviewDto(_chatActivityTracker, userId, _pathService));
         }
 
         public async Task<Result<SendChatMessageResultDto>> SendDirectMessageAsync(SendDirectMessageRequestDto requestDto, User sender, bool createChatIfNotExists = true)
@@ -72,14 +101,6 @@ namespace Calibr8Fit.Api.Services
 
             var chatMessageDto = createdMessage.ToChatMessageDto(sender.UserName!, _pathService);
 
-            // Notify recipient and sender devices via SignalR
-            // await _chatNotifier.NotifyDirectMessageAsync(
-            //     recipientUsername: recipientUser.UserName!,
-            //     message: chatMessageDto
-            // );
-
-            // TODO: Send push notification 
-
             return Result<SendChatMessageResultDto>.Success(
                 new SendChatMessageResultDto
                 {
@@ -105,13 +126,6 @@ namespace Calibr8Fit.Api.Services
                 return Result<SendChatMessageResultDto>.Failure("Failed to send message.");
 
             var chatMessageDto = createdMessage.ToChatMessageDto(sender.UserName!, _pathService);
-
-            // Notify all chat members via SignalR
-            // var memberUsernames = chat.Members.Select(m => m.User!.UserName!).ToList();
-            // await _chatNotifier.NotifyChatMessageAsync(
-            //     recipientUsernames: [.. memberUsernames.Where(u => u != sender.UserName!)],
-            //     message: chatMessageDto
-            // );
 
             var recipientUsernames = chat.Members
                 .Where(m => m.UserId != sender.Id)
@@ -148,7 +162,6 @@ namespace Calibr8Fit.Api.Services
             int? pageSize = null
         )
         {
-            Console.WriteLine($"GetChatMessagesAsync called with chatId: {chatId}, userId: {userId}, before: {before}, pageSize: {pageSize}");
             var messages = await _chatMessageRepository.GetDetailedChatMessagesAsync(chatId, userId, before, pageSize);
 
             return Result<IEnumerable<ChatMessageDto>>.Success(messages.ToChatMessageDtos(userId, _pathService));

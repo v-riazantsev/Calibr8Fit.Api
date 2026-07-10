@@ -22,6 +22,77 @@ namespace Calibr8Fit.Api.Repository
                         .ThenInclude(u => u!.Profile)
                 .ToListAsync();
 
+        public async Task<ChatWithDetails?> GetChatWithDetailsAsync(Guid chatId, string userId) =>
+            await _dbSet
+                .AsNoTracking()
+                .Where(c => c.Id == chatId && c.Members.Any(m => m.UserId == userId))
+                .Select(c => new
+                {
+                    Chat = c,
+
+                    RequesterLastReadMessage = c.Members
+                        .Where(cm => cm.UserId == userId)
+                        .Select(cm => cm.LastReadMessage)
+                        .FirstOrDefault(),
+
+                    LastMessage = c.Messages
+                        .OrderByDescending(m => m.SentAt)
+                        .FirstOrDefault(),
+
+                    LastMessageSentAt = c.Messages.Max(m => (DateTime?)m.SentAt),
+
+                    MemberCount = c.Members.Count(),
+
+                    DirectMember = c.IsGroupChat
+                        ? null
+                        : c.Members
+                            .Where(m => m.UserId != userId)
+                            .Select(m => m.User)
+                            .FirstOrDefault()
+                })
+                .Select(x => new ChatWithDetails
+                {
+                    Chat = x.Chat,
+
+                    LastMessage = x.LastMessage == null
+                        ? null
+                        : new ChatMessageDetailed
+                        {
+                            Id = x.LastMessage.Id,
+                            ChatId = x.LastMessage.ChatId,
+                            Sender = x.LastMessage.User!,
+                            Content = x.LastMessage.Content,
+                            SentAt = x.LastMessage.SentAt,
+                            IsOwnMessage = x.LastMessage.UserId == userId
+                        },
+
+                    LastReadByRequesterMessageSentAt = x.Chat.Members
+                        .Where(cm => cm.UserId == userId && cm.LastReadMessage != null)
+                        .Select(cm => cm.LastReadMessage!.SentAt)
+                        .FirstOrDefault(),
+
+                    UnreadMessagesCount = x.Chat.Messages.Count(m =>
+                        m.UserId != userId &&
+                        (
+                            x.RequesterLastReadMessage == null ||
+                            m.SentAt > x.RequesterLastReadMessage.SentAt
+                        )),
+
+                    LastReadByOtherMembersMessageSentAt = x.Chat.Members
+                        .Where(cm =>
+                            cm.UserId != userId &&
+                            cm.LastReadMessage != null &&
+                            cm.LastReadMessage.UserId == userId)
+                        .Select(cm => cm.LastReadMessage!.SentAt)
+                        .OrderByDescending(sentAt => sentAt)
+                        .FirstOrDefault(),
+
+                    MemberCount = x.MemberCount,
+
+                    DirectMember = x.DirectMember
+                })
+                .FirstOrDefaultAsync();
+
         public async Task<List<ChatWithDetails>> GetUserChatsWithDetailsAsync(string userId) =>
             await _dbSet
                 .AsNoTracking()

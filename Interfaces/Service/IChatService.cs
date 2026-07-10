@@ -7,7 +7,7 @@ namespace Calibr8Fit.Api.Interfaces.Service
 {
     public interface IChatService
     {
-        Task<Chat> CreateDirectChatAsync(string userId, string otherUserId);
+        Task<Result<ChatPreviewDto>> GetDirectChatWithUsernameAsync(string userId, string otherUserName);
         Task<Result<SendChatMessageResultDto>> SendDirectMessageAsync(
             SendDirectMessageRequestDto requestDto,
             User sender,
