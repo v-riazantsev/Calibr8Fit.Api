@@ -1,0 +1,130 @@
+using Calibr8Fit.Api.DataTransferObjects.Chat;
+using Calibr8Fit.Api.DataTransferObjects.Chat.Read;
+using Calibr8Fit.Api.Interfaces.Service;
+using Calibr8Fit.Api.Models;
+using Calibr8Fit.Api.Services.Results;
+
+namespace Calibr8Fit.Api.Services
+{
+    public class MessengerService(
+        IChatService chatService,
+        IChatNotifier chatNotifier,
+        IOnlineTracker onlineTracker,
+        IChatActivityTracker chatActivityTracker
+    ) : IMessengerService
+    {
+        private readonly IChatService _chatService = chatService;
+        private readonly IChatNotifier _chatNotifier = chatNotifier;
+        private readonly IOnlineTracker _onlineTracker = onlineTracker;
+        private readonly IChatActivityTracker _chatActivityTracker = chatActivityTracker;
+
+        public async Task<Result<SendChatMessageResultDto>> SendDirectMessageAsync(
+            SendDirectMessageRequestDto requestDto,
+            User sender)
+        {
+            // Persist the message first, then fan out notifications.
+            var result = await _chatService.SendDirectMessageAsync(requestDto, sender, createChatIfNotExists: true);
+
+            if (!result.Succeeded)
+                return result;
+
+            var message = result.Data!.Message;
+
+            // Direct messages notify both the sender and the recipient.
+            await _chatNotifier.NotifyMessageSentAsync(sender.UserName!, message);
+            await _chatNotifier.NotifyMessageIncomingAsync(requestDto.RecipientUsername, message);
+
+            return result;
+        }
+
+        public async Task<Result<SendChatMessageResultDto>> SendChatMessageAsync(
+            SendChatMessageRequestDto requestDto,
+            User sender)
+        {
+            var result = await _chatService.SendChatMessageAsync(requestDto, sender);
+
+            if (!result.Succeeded)
+                return result;
+
+            var response = result.Data!;
+
+            // Group messages are broadcast to every other chat member.
+            await _chatNotifier.NotifyMessageSentAsync(sender.UserName!, response.Message);
+
+            foreach (var username in response.RecipientUsernames)
+            {
+                await _chatNotifier.NotifyMessageIncomingAsync(username, response.Message);
+            }
+
+            return result;
+        }
+
+        public async Task<Result<ChatReadResultDto>> ReadMessagesAsync(Guid fromMessageId, User user)
+        {
+            var result = await _chatService.UpdateChatReadAsync(fromMessageId, user.Id);
+
+            if (!result.Succeeded)
+                return result;
+
+            // Read receipts are sent back to each sender that needs updating.
+            foreach (var notification in result.Data!.SenderUpdates)
+            {
+                await _chatNotifier.NotifyMessagesReadAsync(notification.SenderUsername, notification.Read);
+            }
+
+            return result;
+        }
+
+        public async Task<Result> OpenChatAsync(Guid chatId, string connectionId, User user)
+        {
+            var result = await _chatService.EnsureUserIsChatMemberAsync(chatId, user.Id);
+
+            if (!result.Succeeded)
+                return result;
+
+            // Track the active chat per connection so typing/read state stays connection-scoped.
+            _chatActivityTracker.OpenChat(user.UserName!, connectionId, chatId);
+
+            return result;
+        }
+
+        public async Task<Result> StartTypingAsync(Guid chatId, string connectionId, User user)
+        {
+            var result = await _chatService.EnsureUserIsChatMemberAsync(chatId, user.Id);
+
+            if (!result.Succeeded)
+                return result;
+
+            // Typing is also tracked per connection because a user can have multiple tabs open.
+            _chatActivityTracker.StartTyping(user.UserName!, connectionId, chatId);
+
+            return result;
+        }
+
+        public Task CloseChatAsync(string connectionId)
+        {
+            _chatActivityTracker.CloseChat(connectionId);
+            return Task.CompletedTask;
+        }
+
+        public Task StopTypingAsync(string connectionId, Guid chatId)
+        {
+            _chatActivityTracker.StopTyping(connectionId, chatId);
+            return Task.CompletedTask;
+        }
+
+        public Task UserConnectedAsync(string username, string connectionId)
+        {
+            _onlineTracker.UserConnected(username, connectionId);
+            return Task.CompletedTask;
+        }
+
+        public Task UserDisconnectedAsync(string connectionId)
+        {
+            // Disconnects must clear both chat activity and online state.
+            _chatActivityTracker.CloseChat(connectionId);
+            _onlineTracker.UserDisconnected(connectionId);
+            return Task.CompletedTask;
+        }
+    }
+}

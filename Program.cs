@@ -74,6 +74,7 @@ builder.Services.AddScoped<IPathService, PathService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IMessengerService, MessengerService>();
 builder.Services.AddScoped<IChatNotifier, ChatNotifier>();
 
 // Singleton Services

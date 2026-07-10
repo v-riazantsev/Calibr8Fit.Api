@@ -9,18 +9,18 @@ namespace Calibr8Fit.Api.Controllers
     [Route("api/chat")]
     public class ChatController(
         IChatService chatService,
-        IChatNotifier chatNotifier,
+        IMessengerService messengerService,
         ICurrentUserService currentUserService
         ) : UserControllerBase(currentUserService)
     {
         private readonly IChatService _chatService = chatService;
-        private readonly IChatNotifier _chatNotifier = chatNotifier;
+        private readonly IMessengerService _messengerService = messengerService;
 
         [HttpPost("chat-message")]
         public Task<IActionResult> SendChatMessage([FromBody] SendChatMessageRequestDto requestDto) =>
             WithUser(async user =>
             {
-                var result = await _chatService.SendChatMessageAsync(requestDto, user);
+                var result = await _messengerService.SendChatMessageAsync(requestDto, user);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
 
@@ -28,25 +28,8 @@ namespace Calibr8Fit.Api.Controllers
         public Task<IActionResult> SendDirectMessage([FromBody] SendDirectMessageRequestDto dto) =>
             WithUser(async user =>
             {
-                var result = await _chatService.SendDirectMessageAsync(
-                    dto,
-                    user,
-                    createChatIfNotExists: true);
-
-                if (!result.Succeeded)
-                    return BadRequest(string.Join("; ", result.Errors ?? ["Unknown error"]));
-
-                var message = result.Data!.Message;
-
-                await _chatNotifier.NotifyMessageSentAsync(
-                    user.UserName!,
-                    message);
-
-                await _chatNotifier.NotifyMessageIncomingAsync(
-                    dto.RecipientUsername,
-                    message);
-
-                return Ok(result.Data);
+                var result = await _messengerService.SendDirectMessageAsync(dto, user);
+                return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
 
         [HttpGet("direct/{username}")]
@@ -68,6 +51,7 @@ namespace Calibr8Fit.Api.Controllers
                 var result = await _chatService.GetUserChatsAsync(userId);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
+
         [HttpGet("messages")]
         public Task<IActionResult> GetChatMessages(
             [FromQuery] Guid chatId,
@@ -76,15 +60,15 @@ namespace Calibr8Fit.Api.Controllers
             ) =>
             WithUserId(async userId =>
             {
-                Console.WriteLine($"GetChatMessages called with chatId: {chatId}, before: {before}, size: {size}");
                 var result = await _chatService.GetChatMessagesAsync(chatId, userId, before, size);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
+
         [HttpPost("read")]
-        public Task ReadMessages(Guid fromMessageId) =>
+        public Task<IActionResult> ReadMessages([FromQuery] Guid fromMessageId) =>
             WithUser(async user =>
             {
-                var result = await _chatService.UpdateChatReadAsync(fromMessageId, user.Id);
+                var result = await _messengerService.ReadMessagesAsync(fromMessageId, user);
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
     }
