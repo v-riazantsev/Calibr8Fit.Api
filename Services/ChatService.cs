@@ -76,6 +76,29 @@ namespace Calibr8Fit.Api.Services
                 chatWithDetails.ToChatPreviewDto(_chatActivityTracker, userId, _pathService));
         }
 
+        public async Task<Result<ChatPreviewDto>> CreateGroupChatAsync(string userId, string chatName)
+        {
+            // Create new group chat
+            var chat = await _chatRepository.AddAsync(new Chat
+            {
+                IsGroupChat = true,
+                Name = chatName,
+                Members =
+                [
+                    new() { UserId = userId, IsAdmin = true }
+                ]
+            }) ?? throw new Exception("Failed to create group chat.");
+
+            // Return the chat preview DTO for the new group chat
+            var chatWithDetails = await _chatRepository.GetChatWithDetailsAsync(chat.Id, userId);
+
+            if (chatWithDetails is null)
+                return Result<ChatPreviewDto>.Failure("Failed to retrieve chat details.");
+
+            return Result<ChatPreviewDto>.Success(
+                chatWithDetails.ToChatPreviewDto(_chatActivityTracker, userId, _pathService));
+        }
+
         public async Task<Result<SendChatMessageResultDto>> SendDirectMessageAsync(SendDirectMessageRequestDto requestDto, User sender, bool createChatIfNotExists = true)
         {
             // Try to get recipient user by username

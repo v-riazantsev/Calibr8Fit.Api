@@ -23,6 +23,14 @@ namespace Calibr8Fit.Api.Controllers
                 return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
             });
 
+        [HttpPost("group")]
+        public Task<IActionResult> CreateGroupChat([FromBody] string chatName) =>
+            WithUserId(async userId =>
+            {
+                var result = await _chatService.CreateGroupChatAsync(userId, chatName);
+                return result.Succeeded ? Ok(result.Data) : BadRequest(result.Errors);
+            });
+
         [HttpPost("chat-message")]
         public Task<IActionResult> SendChatMessage([FromBody] SendChatMessageRequestDto requestDto) =>
             WithUser(async user =>
