@@ -2,15 +2,15 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Post
 {
-    public class PostDto
+    public record PostDto
     {
-        public required Guid Id { get; set; }
-        public required UserSummaryDto Author { get; set; }
-        public required string Content { get; set; }
-        public required IEnumerable<string> ImageUrls { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int CommentCount { get; set; }
-        public int LikeCount { get; set; }
-        public bool IsLikedByCurrentUser { get; set; }
+        public required Guid Id { get; init; }
+        public required UserSummaryDto Author { get; init; }
+        public required string Content { get; init; }
+        public required IEnumerable<string> ImageUrls { get; init; }
+        public DateTime CreatedAt { get; init; }
+        public int CommentCount { get; init; }
+        public int LikeCount { get; init; }
+        public bool IsLikedByCurrentUser { get; init; }
     }
 }

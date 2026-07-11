@@ -3,15 +3,15 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Activity
 {
-    public class UpdateActivityRequestDto : IUpdateRequestDto<Guid>
+    public record UpdateActivityRequestDto : IUpdateRequestDto<Guid>
     {
         [Required]
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
         [Required]
-        public required string MajorHeading { get; set; }
+        public required string MajorHeading { get; init; }
         [Required]
-        public required float MetValue { get; set; }
+        public required float MetValue { get; init; }
         [Required]
-        public required string Description { get; set; }
+        public required string Description { get; init; }
     }
 }

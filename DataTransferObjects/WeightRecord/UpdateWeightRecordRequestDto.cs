@@ -3,16 +3,16 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.WeightRecord
 {
-    public class UpdateWeightRecordRequestDto : IUpdateRequestDto<Guid>
+    public record UpdateWeightRecordRequestDto : IUpdateRequestDto<Guid>
     {
         [Required]
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
         [Required]
-        public required float Weight { get; set; } // Weight in kilograms
+        public required float Weight { get; init; } // Weight in kilograms
         [Required]
-        public required DateTime Time { get; set; }
+        public required DateTime Time { get; init; }
         [Required]
-        public required DateTime ModifiedAt { get; set; }
-        public required bool Deleted { get; set; } = false; // Default to false if not specified
+        public required DateTime ModifiedAt { get; init; }
+        public required bool Deleted { get; init; } = false; // Default to false if not specified
     }
 }

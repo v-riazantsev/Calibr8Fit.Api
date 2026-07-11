@@ -2,13 +2,13 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Chat
 {
-    public class ChatDto
+    public record ChatDto
     {
-        public required Guid Id { get; set; }
-        public required string? Name { get; set; }
-        public required bool IsGroupChat { get; set; }
-        public required string? AvatarUrl { get; set; }
-        public required DateTime CreatedAt { get; set; }
-        public required IEnumerable<UserSummaryDto> Members { get; set; }
+        public required Guid Id { get; init; }
+        public required string? Name { get; init; }
+        public required bool IsGroupChat { get; init; }
+        public required string? AvatarUrl { get; init; }
+        public required DateTime CreatedAt { get; init; }
+        public required IEnumerable<UserSummaryDto> Members { get; init; }
     }
 }

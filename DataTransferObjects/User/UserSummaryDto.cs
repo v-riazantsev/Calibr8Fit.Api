@@ -1,10 +1,10 @@
 namespace Calibr8Fit.Api.DataTransferObjects.User
 {
-    public class UserSummaryDto
+    public record UserSummaryDto
     {
-        public required string UserName { get; set; }
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public string? ProfilePictureUrl { get; set; }
+        public required string UserName { get; init; }
+        public required string FirstName { get; init; }
+        public required string LastName { get; init; }
+        public string? ProfilePictureUrl { get; init; }
     }
 }

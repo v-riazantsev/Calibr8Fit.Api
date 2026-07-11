@@ -2,20 +2,20 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Chat
 {
-    public class ChatPreviewDto
+    public record ChatPreviewDto
     {
-        public required Guid Id { get; set; }
-        public required string DisplayName { get; set; }
-        public required bool IsGroupChat { get; set; }
-        public required string? AvatarUrl { get; set; }
-        public required DateTime CreatedAt { get; set; }
-        public required int MemberCount { get; set; }
-        public required ChatMessageDto? LastMessage { get; set; }
+        public required Guid Id { get; init; }
+        public required string DisplayName { get; init; }
+        public required bool IsGroupChat { get; init; }
+        public required string? AvatarUrl { get; init; }
+        public required DateTime CreatedAt { get; init; }
+        public required int MemberCount { get; init; }
+        public required ChatMessageDto? LastMessage { get; init; }
 
-        public UserSummaryDto? DirectMember { get; set; }
+        public UserSummaryDto? DirectMember { get; init; }
 
-        public required DateTime? LastReadByUserMessageSentAt { get; set; }
-        public required DateTime? LastReadByOtherMembersMessageSentAt { get; set; }
-        public required int UnreadMessagesCount { get; set; }
+        public required DateTime? LastReadByUserMessageSentAt { get; init; }
+        public required DateTime? LastReadByOtherMembersMessageSentAt { get; init; }
+        public required int UnreadMessagesCount { get; init; }
     }
 }

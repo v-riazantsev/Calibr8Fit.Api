@@ -1,6 +1,6 @@
 namespace Calibr8Fit.Api.DataTransferObjects.Chat
 {
-    public class SendChatMessageResultDto
+    public record SendChatMessageResultDto
     {
         public required ChatMessageDto Message { get; init; }
 

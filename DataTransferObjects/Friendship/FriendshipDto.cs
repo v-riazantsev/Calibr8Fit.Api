@@ -2,9 +2,9 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Friendship
 {
-    public class FriendshipDto
+    public record FriendshipDto
     {
-        public required UserSummaryDto Friend { get; set; }
-        public required DateTime FriendsSince { get; set; }
+        public required UserSummaryDto Friend { get; init; }
+        public required DateTime FriendsSince { get; init; }
     }
 }

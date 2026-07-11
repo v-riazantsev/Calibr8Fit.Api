@@ -3,20 +3,20 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.ActivityRecord
 {
-    public class UpdateActivityRecordRequestDto : IUpdateRequestDto<Guid>
+    public record UpdateActivityRecordRequestDto : IUpdateRequestDto<Guid>
     {
         [Required]
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
         [Required]
-        public required Guid ActivityId { get; set; }
+        public required Guid ActivityId { get; init; }
         [Required]
-        public required int Duration { get; set; } // Duration in seconds
+        public required int Duration { get; init; } // Duration in seconds
         [Required]
-        public required float CaloriesBurned { get; set; }
+        public required float CaloriesBurned { get; init; }
         [Required]
-        public required DateTime Time { get; set; }
+        public required DateTime Time { get; init; }
         [Required]
-        public required DateTime ModifiedAt { get; set; }
-        public bool Deleted { get; set; } = false; // Default to false if not specified
+        public required DateTime ModifiedAt { get; init; }
+        public bool Deleted { get; init; } = false; // Default to false if not specified
     }
 }

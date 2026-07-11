@@ -2,12 +2,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Chat
 {
-    public class SendDirectMessageRequestDto
+    public record SendDirectMessageRequestDto
     {
         [Required]
-        public required string RecipientUsername { get; set; }
+        public required string RecipientUsername { get; init; }
         [Required]
-        public required string Content { get; set; }
-        public DateTime SendedAt { get; set; } = DateTime.UtcNow;
+        public required string Content { get; init; }
+        public DateTime SendedAt { get; init; } = DateTime.UtcNow;
     }
 }

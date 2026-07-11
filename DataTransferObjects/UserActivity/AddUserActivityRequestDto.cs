@@ -2,16 +2,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Calibr8Fit.Api.DataTransferObjects.UserActivity
 {
-    public class AddUserActivityRequestDto
+    public record AddUserActivityRequestDto
     {
-        public Guid Id { get; set; } // Optional, will be generated if not provided
+        public Guid Id { get; init; } // Optional, will be generated if not provided
         [Required]
-        public required string MajorHeading { get; set; }
+        public required string MajorHeading { get; init; }
         [Required]
-        public required float MetValue { get; set; }
+        public required float MetValue { get; init; }
         [Required]
-        public required string Description { get; set; }
-        public DateTime ModifiedAt { get; set; } = DateTime.UtcNow; // Default to current time if not specified
-        public bool Deleted { get; set; } = false; // Default to false if not specified
+        public required string Description { get; init; }
+        public DateTime ModifiedAt { get; init; } = DateTime.UtcNow; // Default to current time if not specified
+        public bool Deleted { get; init; } = false; // Default to false if not specified
     }
 }

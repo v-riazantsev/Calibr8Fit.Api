@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Authentication
 {
-    public class RegisterDto
+    public record RegisterDto
     {
         [Required]
-        public required string UserName { get; set; }
+        public required string UserName { get; init; }
         [Required]
-        public required string Password { get; set; }
+        public required string Password { get; init; }
         [Required]
-        public required string DeviceId { get; set; }
+        public required string DeviceId { get; init; }
     }
 }

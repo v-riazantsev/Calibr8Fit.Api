@@ -1,12 +1,12 @@
 namespace Calibr8Fit.Api.DataTransferObjects.UserMeal
 {
-    public class UserMealDto
+    public record UserMealDto
     {
-        public required Guid Id { get; set; }
-        public required string Name { get; set; }
-        public string? Notes { get; set; }
-        public List<UserMealItemDto>? MealItems { get; set; } = [];
-        public required DateTime ModifiedAt { get; set; }
-        public required bool Deleted { get; set; }
+        public required Guid Id { get; init; }
+        public required string Name { get; init; }
+        public string? Notes { get; init; }
+        public List<UserMealItemDto>? MealItems { get; init; } = [];
+        public required DateTime ModifiedAt { get; init; }
+        public required bool Deleted { get; init; }
     }
 }

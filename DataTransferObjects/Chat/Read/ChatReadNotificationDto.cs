@@ -1,6 +1,6 @@
 namespace Calibr8Fit.Api.DataTransferObjects.Chat.Read
 {
-    public class ChatReadNotificationDto
+    public record ChatReadNotificationDto
     {
         public required string SenderUsername { get; init; }
 

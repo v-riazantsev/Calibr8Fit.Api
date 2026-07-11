@@ -3,16 +3,16 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.WaterIntakeRecord
 {
-    public class UpdateWaterIntakeRecordRequestDto : IUpdateRequestDto<Guid>
+    public record UpdateWaterIntakeRecordRequestDto : IUpdateRequestDto<Guid>
     {
         [Required]
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
         [Required]
-        public required int AmountInMilliliters { get; set; }
+        public required int AmountInMilliliters { get; init; }
         [Required]
-        public required DateTime Time { get; set; }
+        public required DateTime Time { get; init; }
         [Required]
-        public required DateTime ModifiedAt { get; set; }
-        public required bool Deleted { get; set; } = false; // Default to false if not specified
+        public required DateTime ModifiedAt { get; init; }
+        public required bool Deleted { get; init; } = false; // Default to false if not specified
     }
 }

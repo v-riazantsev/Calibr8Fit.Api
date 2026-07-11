@@ -3,7 +3,7 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 // TODO: use record for every DTO?
 namespace Calibr8Fit.Api.DataTransferObjects.Chat
 {
-    public record class ChatMessageDto
+    public record ChatMessageDto
     {
         public required Guid Id { get; init; }
         public required Guid ChatId { get; init; }

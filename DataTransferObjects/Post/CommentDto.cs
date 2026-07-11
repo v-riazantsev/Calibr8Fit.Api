@@ -2,12 +2,12 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Post
 {
-    public class CommentDto
+    public record CommentDto
     {
-        public required Guid Id { get; set; }
-        public required Guid PostId { get; set; }
-        public required UserSummaryDto Author { get; set; }
-        public required string Content { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public required Guid Id { get; init; }
+        public required Guid PostId { get; init; }
+        public required UserSummaryDto Author { get; init; }
+        public required string Content { get; init; }
+        public DateTime CreatedAt { get; init; }
     }
 }

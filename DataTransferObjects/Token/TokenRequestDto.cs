@@ -2,13 +2,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Token
 {
-    public class TokenRequestDto
+    public record TokenRequestDto
     {
         [Required]
-        public required string OldAccessToken { get; set; }
+        public required string OldAccessToken { get; init; }
         [Required]
-        public required string RefreshToken { get; set; }
+        public required string RefreshToken { get; init; }
         [Required]
-        public required string DeviceId { get; set; }
+        public required string DeviceId { get; init; }
     }
 }

@@ -1,8 +1,8 @@
 namespace Calibr8Fit.Api.DataTransferObjects.UserMeal
 {
-    public class UserMealItemDto
+    public record UserMealItemDto
     {
-        public required Guid FoodId { get; set; }
-        public required float Quantity { get; set; } // Amount consumed in grams
+        public required Guid FoodId { get; init; }
+        public required float Quantity { get; init; } // Amount consumed in grams
     }
 }

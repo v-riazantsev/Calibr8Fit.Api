@@ -2,10 +2,10 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.WeightRecord
 {
-    public class SyncWeightRecordRequestDto : ISyncRequestDto<AddWeightRecordRequestDto>
+    public record SyncWeightRecordRequestDto : ISyncRequestDto<AddWeightRecordRequestDto>
     {
-        public required DateTime LastSyncedAt { get; set; } = DateTime.MinValue;
-        public required List<AddWeightRecordRequestDto> WeightRecords { get; set; } = [];
+        public required DateTime LastSyncedAt { get; init; } = DateTime.MinValue;
+        public required List<AddWeightRecordRequestDto> WeightRecords { get; init; } = [];
 
         IEnumerable<AddWeightRecordRequestDto> ISyncRequestDto<AddWeightRecordRequestDto>.AddEntityRequestDtos => WeightRecords;
     }

@@ -2,10 +2,10 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.DailyBurnTarget
 {
-    public class SyncDailyBurnTargetResponseDto : ISyncResponseDto<DailyBurnTargetDto>
+    public record SyncDailyBurnTargetResponseDto : ISyncResponseDto<DailyBurnTargetDto>
     {
-        public required DateTime LastSyncedAt { get; set; }
-        public required List<DailyBurnTargetDto> DailyBurnTargets { get; set; }
+        public required DateTime LastSyncedAt { get; init; }
+        public required List<DailyBurnTargetDto> DailyBurnTargets { get; init; }
         IEnumerable<DailyBurnTargetDto> ISyncResponseDto<DailyBurnTargetDto>.Entities => DailyBurnTargets;
     }
 }

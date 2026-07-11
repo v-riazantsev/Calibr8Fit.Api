@@ -2,10 +2,10 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.ConsumptionRecord
 {
-    public class SyncConsumptionRecordRequestDto : ISyncRequestDto<AddConsumptionRecordRequestDto>
+    public record SyncConsumptionRecordRequestDto : ISyncRequestDto<AddConsumptionRecordRequestDto>
     {
-        public DateTime LastSyncedAt { get; set; } = DateTime.MinValue;
-        public List<AddConsumptionRecordRequestDto> ConsumptionRecords { get; set; } = [];
+        public DateTime LastSyncedAt { get; init; } = DateTime.MinValue;
+        public List<AddConsumptionRecordRequestDto> ConsumptionRecords { get; init; } = [];
 
         IEnumerable<AddConsumptionRecordRequestDto> ISyncRequestDto<AddConsumptionRecordRequestDto>.AddEntityRequestDtos => ConsumptionRecords;
     }

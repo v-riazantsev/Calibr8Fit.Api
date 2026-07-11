@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Calibr8Fit.Api.DataTransferObjects.UserActivity
 {
-    public class DeleteUserActivityRequestDto
+    public record DeleteUserActivityRequestDto
     {
         [Required]
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
         [Required]
-        public required DateTime DeletedAt { get; set; }
+        public required DateTime DeletedAt { get; init; }
     }
 }

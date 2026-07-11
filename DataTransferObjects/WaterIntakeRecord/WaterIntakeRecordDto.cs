@@ -1,11 +1,11 @@
 namespace Calibr8Fit.Api.DataTransferObjects.WaterIntakeRecord
 {
-    public class WaterIntakeRecordDto
+    public record WaterIntakeRecordDto
     {
-        public required Guid Id { get; set; }
-        public required int AmountInMilliliters { get; set; }
-        public required DateTime Time { get; set; }
-        public required DateTime ModifiedAt { get; set; }
-        public required bool Deleted { get; set; }
+        public required Guid Id { get; init; }
+        public required int AmountInMilliliters { get; init; }
+        public required DateTime Time { get; init; }
+        public required DateTime ModifiedAt { get; init; }
+        public required bool Deleted { get; init; }
     }
 }

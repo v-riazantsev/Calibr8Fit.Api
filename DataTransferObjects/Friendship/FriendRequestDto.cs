@@ -2,10 +2,10 @@ using Calibr8Fit.Api.DataTransferObjects.User;
 
 namespace Calibr8Fit.Api.DataTransferObjects.Friendship
 {
-    public class FriendRequestDto
+    public record FriendRequestDto
     {
-        public required UserSummaryDto Requester { get; set; }
-        public required UserSummaryDto Receiver { get; set; }
-        public required DateTime RequestedAt { get; set; }
+        public required UserSummaryDto Requester { get; init; }
+        public required UserSummaryDto Receiver { get; init; }
+        public required DateTime RequestedAt { get; init; }
     }
 }

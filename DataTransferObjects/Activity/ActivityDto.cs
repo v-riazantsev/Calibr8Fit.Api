@@ -1,10 +1,10 @@
 namespace Calibr8Fit.Api.DataTransferObjects.Activity
 {
-    public class ActivityDto
+    public record ActivityDto
     {
-        public required Guid Id { get; set; }
-        public required string MajorHeading { get; set; }
-        public required float MetValue { get; set; }
-        public required string Description { get; set; }
+        public required Guid Id { get; init; }
+        public required string MajorHeading { get; init; }
+        public required float MetValue { get; init; }
+        public required string Description { get; init; }
     }
 }

@@ -3,16 +3,16 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.UserMeal
 {
-    public class UpdateUserMealRequestDto : IUpdateRequestDto<Guid>
+    public record UpdateUserMealRequestDto : IUpdateRequestDto<Guid>
     {
         [Required]
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
         [Required]
-        public required string Name { get; set; }
-        public string? Notes { get; set; }
-        public List<AddUserMealItemDto>? MealItems { get; set; } = [];
+        public required string Name { get; init; }
+        public string? Notes { get; init; }
+        public List<AddUserMealItemDto>? MealItems { get; init; } = [];
         [Required]
-        public required DateTime ModifiedAt { get; set; }
-        public required bool Deleted { get; set; } = false; // Default to false if not specified
+        public required DateTime ModifiedAt { get; init; }
+        public required bool Deleted { get; init; } = false; // Default to false if not specified
     }
 }

@@ -2,10 +2,10 @@ using Calibr8Fit.Api.Interfaces.DataTransferObjects;
 
 namespace Calibr8Fit.Api.DataTransferObjects.ActivityRecord
 {
-    public class SyncActivityRecordResponseDto : ISyncResponseDto<ActivityRecordDto>
+    public record SyncActivityRecordResponseDto : ISyncResponseDto<ActivityRecordDto>
     {
-        public required DateTime LastSyncedAt { get; set; }
-        public required List<ActivityRecordDto> ActivityRecords { get; set; }
+        public required DateTime LastSyncedAt { get; init; }
+        public required List<ActivityRecordDto> ActivityRecords { get; init; }
         IEnumerable<ActivityRecordDto> ISyncResponseDto<ActivityRecordDto>.Entities => ActivityRecords;
     }
 }
