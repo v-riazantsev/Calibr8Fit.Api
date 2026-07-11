@@ -18,8 +18,6 @@ namespace Calibr8Fit.Api.Services
             string recipientUsername,
             ChatMessageDto message)
         {
-            Console.WriteLine($"Sending to {UserGroup(recipientUsername)}");
-
             return _hub.Clients
                 .Group(UserGroup(recipientUsername))
                 .SendAsync("MessageIncoming", message.CopyForRecipient());

@@ -23,7 +23,6 @@ namespace Calibr8Fit.Api.Mappers
 
         public static ChatPreviewDto ToChatPreviewDto(
             this ChatWithDetails c,
-            IChatActivityTracker chatActivityTracker,
             string currentUserName,
             IPathService pathService) =>
             new()
@@ -46,15 +45,13 @@ namespace Calibr8Fit.Api.Mappers
                 LastReadByOtherMembersMessageSentAt = c.LastReadByOtherMembersMessageSentAt,
                 UnreadMessagesCount = c.UnreadMessagesCount,
                 DirectMember = c.DirectMember?.ToUserSummaryDto(pathService),
-                TypingUsernames = chatActivityTracker.GetTypingUsernames(c.Chat.Id, currentUserName)
             };
 
         public static IEnumerable<ChatPreviewDto> ToChatPreviewDtos(
             this IEnumerable<ChatWithDetails> chats,
             IPathService pathService,
-            IChatActivityTracker chatActivityTracker,
             string currentUserName
             ) =>
-            chats.Select(c => c.ToChatPreviewDto(chatActivityTracker, currentUserName, pathService));
+            chats.Select(c => c.ToChatPreviewDto(currentUserName, pathService));
     }
 }

@@ -8,15 +8,11 @@ namespace Calibr8Fit.Api.Services
 {
     public class MessengerService(
         IChatService chatService,
-        IChatNotifier chatNotifier,
-        IOnlineTracker onlineTracker,
-        IChatActivityTracker chatActivityTracker
+        IChatNotifier chatNotifier
     ) : IMessengerService
     {
         private readonly IChatService _chatService = chatService;
         private readonly IChatNotifier _chatNotifier = chatNotifier;
-        private readonly IOnlineTracker _onlineTracker = onlineTracker;
-        private readonly IChatActivityTracker _chatActivityTracker = chatActivityTracker;
 
         public async Task<Result<SendChatMessageResultDto>> SendDirectMessageAsync(
             SendDirectMessageRequestDto requestDto,
@@ -73,58 +69,6 @@ namespace Calibr8Fit.Api.Services
             }
 
             return result;
-        }
-
-        public async Task<Result> OpenChatAsync(Guid chatId, string connectionId, User user)
-        {
-            var result = await _chatService.EnsureUserIsChatMemberAsync(chatId, user.Id);
-
-            if (!result.Succeeded)
-                return result;
-
-            // Track the active chat per connection so typing/read state stays connection-scoped.
-            _chatActivityTracker.OpenChat(user.UserName!, connectionId, chatId);
-
-            return result;
-        }
-
-        public async Task<Result> StartTypingAsync(Guid chatId, string connectionId, User user)
-        {
-            var result = await _chatService.EnsureUserIsChatMemberAsync(chatId, user.Id);
-
-            if (!result.Succeeded)
-                return result;
-
-            // Typing is also tracked per connection because a user can have multiple tabs open.
-            _chatActivityTracker.StartTyping(user.UserName!, connectionId, chatId);
-
-            return result;
-        }
-
-        public Task CloseChatAsync(string connectionId)
-        {
-            _chatActivityTracker.CloseChat(connectionId);
-            return Task.CompletedTask;
-        }
-
-        public Task StopTypingAsync(string connectionId, Guid chatId)
-        {
-            _chatActivityTracker.StopTyping(connectionId, chatId);
-            return Task.CompletedTask;
-        }
-
-        public Task UserConnectedAsync(string username, string connectionId)
-        {
-            _onlineTracker.UserConnected(username, connectionId);
-            return Task.CompletedTask;
-        }
-
-        public Task UserDisconnectedAsync(string connectionId)
-        {
-            // Disconnects must clear both chat activity and online state.
-            _chatActivityTracker.CloseChat(connectionId);
-            _onlineTracker.UserDisconnected(connectionId);
-            return Task.CompletedTask;
         }
     }
 }

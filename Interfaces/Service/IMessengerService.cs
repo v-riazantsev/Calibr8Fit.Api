@@ -16,17 +16,5 @@ namespace Calibr8Fit.Api.Interfaces.Service
             User sender);
 
         Task<Result<ChatReadResultDto>> ReadMessagesAsync(Guid fromMessageId, User user);
-
-        Task<Result> OpenChatAsync(Guid chatId, string connectionId, User user);
-
-        Task<Result> StartTypingAsync(Guid chatId, string connectionId, User user);
-
-        Task CloseChatAsync(string connectionId);
-
-        Task StopTypingAsync(string connectionId, Guid chatId);
-
-        Task UserConnectedAsync(string username, string connectionId);
-
-        Task UserDisconnectedAsync(string connectionId);
     }
 }

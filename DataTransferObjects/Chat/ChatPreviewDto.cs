@@ -13,7 +13,6 @@ namespace Calibr8Fit.Api.DataTransferObjects.Chat
         public required ChatMessageDto? LastMessage { get; set; }
 
         public UserSummaryDto? DirectMember { get; set; }
-        public required IEnumerable<string> TypingUsernames { get; set; }
 
         public required DateTime? LastReadByUserMessageSentAt { get; set; }
         public required DateTime? LastReadByOtherMembersMessageSentAt { get; set; }

@@ -14,8 +14,7 @@ namespace Calibr8Fit.Api.Services
         IUserRepositoryBase<ChatMember, (Guid, string)> chatMemberRepository,
         IChatMessagesRepository chatMessageRepository,
         IUserRepository userRepository,
-        IPathService pathService,
-        IChatActivityTracker chatActivityTracker
+        IPathService pathService
     ) : IChatService
     {
         private readonly IChatRepository _chatRepository = chatRepository;
@@ -23,7 +22,6 @@ namespace Calibr8Fit.Api.Services
         private readonly IChatMessagesRepository _chatMessageRepository = chatMessageRepository;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly IPathService _pathService = pathService;
-        private readonly IChatActivityTracker _chatActivityTracker = chatActivityTracker;
 
         private async Task<Chat> CreateDirectChatAsync(string userId, string otherUserId)
         {
@@ -73,7 +71,7 @@ namespace Calibr8Fit.Api.Services
                 return Result<ChatPreviewDto>.Failure("Failed to retrieve chat details.");
 
             return Result<ChatPreviewDto>.Success(
-                chatWithDetails.ToChatPreviewDto(_chatActivityTracker, userId, _pathService));
+                chatWithDetails.ToChatPreviewDto(userId, _pathService));
         }
 
         public async Task<Result<ChatPreviewDto>> CreateGroupChatAsync(string userId, string chatName)
@@ -96,7 +94,7 @@ namespace Calibr8Fit.Api.Services
                 return Result<ChatPreviewDto>.Failure("Failed to retrieve chat details.");
 
             return Result<ChatPreviewDto>.Success(
-                chatWithDetails.ToChatPreviewDto(_chatActivityTracker, userId, _pathService));
+                chatWithDetails.ToChatPreviewDto(userId, _pathService));
         }
 
         public async Task<Result<SendChatMessageResultDto>> SendDirectMessageAsync(SendDirectMessageRequestDto requestDto, User sender, bool createChatIfNotExists = true)
@@ -195,7 +193,7 @@ namespace Calibr8Fit.Api.Services
             var chats = await _chatRepository.GetUserChatsWithDetailsAsync(userId);
 
             return Result<IEnumerable<ChatPreviewDto>>.Success(
-                chats.ToChatPreviewDtos(_pathService, _chatActivityTracker, userId));
+                chats.ToChatPreviewDtos(_pathService, userId));
         }
 
         public async Task<Result<ChatReadResultDto>> UpdateChatReadAsync(

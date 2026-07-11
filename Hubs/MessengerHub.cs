@@ -52,41 +52,9 @@ public class MessengerHub(
             return data.ReaderUpdate;
         });
 
-    public Task OpenChat(Guid chatId) =>
-        WithUser(async user =>
-        {
-            var result = await _messengerService.OpenChatAsync(chatId, Context.ConnectionId, user);
-
-            if (!result.Succeeded)
-                throw new HubException(string.Join("; ", result.Errors ?? ["Unknown error"]));
-        });
-
-    public Task CloseChat() =>
-        WithUser(user =>
-        {
-            return _messengerService.CloseChatAsync(Context.ConnectionId);
-        });
-
-    public Task StartTyping(Guid chatId) =>
-        WithUser(async user =>
-        {
-            var result = await _messengerService.StartTypingAsync(chatId, Context.ConnectionId, user);
-
-            if (!result.Succeeded)
-                throw new HubException(string.Join("; ", result.Errors ?? ["Unknown error"]));
-        });
-
-    public Task StopTyping(Guid chatId) =>
-        WithUser(user =>
-        {
-            return _messengerService.StopTypingAsync(Context.ConnectionId, chatId);
-        });
-
     public override Task OnConnectedAsync() =>
         WithUser(async user =>
         {
-            await _messengerService.UserConnectedAsync(user.UserName!, Context.ConnectionId);
-
             await Groups.AddToGroupAsync(
                 Context.ConnectionId,
                 UserGroup(user.UserName!));
@@ -97,8 +65,6 @@ public class MessengerHub(
     public override Task OnDisconnectedAsync(Exception? exception) =>
         WithUser(async user =>
         {
-            await _messengerService.UserDisconnectedAsync(Context.ConnectionId);
-
             await Groups.RemoveFromGroupAsync(
                 Context.ConnectionId,
                 UserGroup(user.UserName!));

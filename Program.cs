@@ -77,10 +77,6 @@ builder.Services.AddScoped<IChatService, ChatService>();
 builder.Services.AddScoped<IMessengerService, MessengerService>();
 builder.Services.AddScoped<IChatNotifier, ChatNotifier>();
 
-// Singleton Services
-builder.Services.AddSingleton<IOnlineTracker, OnlineTracker>();
-builder.Services.AddSingleton<IChatActivityTracker, ChatActivityTracker>();
-
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserRepositoryBase<RefreshToken, string[]>, UserRepositoryBase<RefreshToken, string[]>>();
