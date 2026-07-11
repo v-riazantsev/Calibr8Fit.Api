@@ -8,7 +8,6 @@ namespace Calibr8Fit.Api.Interfaces.Repository.Base
         where TKey : notnull
     {
         ValueTask<T?> GetAsync(params object?[] keyValues);
-        // TODO: Use object?[] for keys to support composite keys?
         Task<List<T>> GetRangeAsync(IEnumerable<TKey> keys);
         Task<List<T>> GetAllAsync();
         Task<bool> KeyExistsAsync(params object?[] keyValues);

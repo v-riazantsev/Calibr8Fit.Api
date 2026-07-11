@@ -52,7 +52,7 @@ namespace Calibr8Fit.Api.Controllers
         }
         [HttpDelete("me")]
         public Task<IActionResult> DeleteMe() =>
-            WithUser(async user => await DeleteUser(user.UserName!));
+            WithUserName(DeleteUser);
 
         [HttpDelete("{username}")]
         [Authorize(Roles = "Admin")]

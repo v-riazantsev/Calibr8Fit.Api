@@ -46,9 +46,9 @@ namespace Calibr8Fit.Api.Controllers
         [HttpPost("logout")]
         [Authorize]
         public Task<IActionResult> Logout([FromQuery] string deviceId) =>
-            WithUser(async user =>
+            WithUserId(async userId =>
             {
-                var result = await _authService.LogoutAsync(user.Id, deviceId);
+                var result = await _authService.LogoutAsync(userId, deviceId);
                 return result.Succeeded
                     ? NoContent()
                     : NotFound(result.Errors);
@@ -56,9 +56,9 @@ namespace Calibr8Fit.Api.Controllers
         [HttpPost("logout-all")]
         [Authorize]
         public Task<IActionResult> LogoutAll() =>
-            WithUser(async user =>
+            WithUserId(async userId =>
             {
-                var result = await _authService.LogoutAllAsync(user.Id);
+                var result = await _authService.LogoutAllAsync(userId);
                 return result.Succeeded
                     ? NoContent()
                     : NotFound(result.Errors);

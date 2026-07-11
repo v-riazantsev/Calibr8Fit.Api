@@ -53,21 +53,21 @@ public class MessengerHub(
         });
 
     public override Task OnConnectedAsync() =>
-        WithUser(async user =>
+        WithUserName(async username =>
         {
             await Groups.AddToGroupAsync(
                 Context.ConnectionId,
-                UserGroup(user.UserName!));
+                UserGroup(username));
 
             await base.OnConnectedAsync();
         });
 
     public override Task OnDisconnectedAsync(Exception? exception) =>
-        WithUser(async user =>
+        WithUserName(async username =>
         {
             await Groups.RemoveFromGroupAsync(
                 Context.ConnectionId,
-                UserGroup(user.UserName!));
+                UserGroup(username));
 
             await base.OnDisconnectedAsync(exception);
         });

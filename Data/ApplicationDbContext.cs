@@ -413,7 +413,6 @@ namespace Calibr8Fit.Api.Data
             builder.Entity<ChatMember>()
                 .HasIndex(cm => cm.ChatId); // Index on ChatId for efficient lookups
 
-            // TODO: Handle user deletion better
             // Configure ChatMessage
             builder.Entity<ChatMessage>()
                 .HasOne(cm => cm.User)

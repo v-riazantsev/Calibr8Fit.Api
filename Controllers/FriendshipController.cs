@@ -79,9 +79,9 @@ namespace Calibr8Fit.Api.Controllers
 
         [HttpDelete("{friendUsername}")]
         public Task<IActionResult> RemoveFriendship(string friendUsername) =>
-            WithUser(async user =>
+            WithUserName(async username =>
             {
-                var result = await _friendshipService.RemoveFriendshipAsync(user.UserName!, friendUsername);
+                var result = await _friendshipService.RemoveFriendshipAsync(username, friendUsername);
 
                 return result.Succeeded
                     ? Ok(new { message = "Friendship removed" })
@@ -90,9 +90,9 @@ namespace Calibr8Fit.Api.Controllers
 
         [HttpGet("{username}/are-friends")]
         public Task<IActionResult> AreFriends(string username) =>
-            WithUser(async user =>
+            WithUserName(async currentUsername =>
             {
-                var areFriends = await _friendshipService.AreFriendsAsync(user.UserName!, username);
+                var areFriends = await _friendshipService.AreFriendsAsync(currentUsername, username);
                 return Ok(new { areFriends });
             });
 
@@ -108,9 +108,9 @@ namespace Calibr8Fit.Api.Controllers
             [FromQuery] string query = "",
             [FromQuery] int page = 0,
             [FromQuery] int size = 10) =>
-            WithUser(async user =>
+            WithUserName(async username =>
             {
-                var friendships = await _friendshipService.SearchFriendshipsOfUserAsync(user.UserName!, query, page, size);
+                var friendships = await _friendshipService.SearchFriendshipsOfUserAsync(username, query, page, size);
                 return Ok(friendships);
             });
 

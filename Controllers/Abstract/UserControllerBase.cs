@@ -36,5 +36,17 @@ namespace Calibr8Fit.Api.Controllers.Abstract
             if (user is null) return Unauthorized("User not found.");
             return await action(user.Id);
         }
+        protected async Task<IActionResult> WithUserName(Func<string, IActionResult> action)
+        {
+            var user = await _currentUserService.GetCurrentUserAsync(User);
+            if (user is null) return Unauthorized("User not found.");
+            return action(user.UserName!);
+        }
+        protected async Task<IActionResult> WithUserName(Func<string, Task<IActionResult>> action)
+        {
+            var user = await _currentUserService.GetCurrentUserAsync(User);
+            if (user is null) return Unauthorized("User not found.");
+            return await action(user.UserName!);
+        }
     }
 }
