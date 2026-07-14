@@ -7,11 +7,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calibr8Fit.Api.Repository
 {
+    // Manages chat persistence including direct and group conversations with message queries
     public class ChatRepository(
         ApplicationDbContext context
     ) : RepositoryBase<Chat, Guid>(context), IChatRepository
     {
         public async Task<List<Chat>> GetUserChatsAsync(string userId) =>
+            // Retrieve chats with last message for preview and member details
             await _dbSet
                 .Where(c => c.Members.Any(m => m.UserId == userId))
                 .Include(c => c.Members)

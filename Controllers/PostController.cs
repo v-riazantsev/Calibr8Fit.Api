@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user posts with likes, comments, and image uploads
     [ApiController]
     [Route("api/post")]
     [Authorize]

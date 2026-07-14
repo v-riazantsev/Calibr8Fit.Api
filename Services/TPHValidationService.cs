@@ -4,6 +4,7 @@ using Calibr8Fit.Api.Interfaces.Service;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Validates user access to entities using table-per-hierarchy inheritance
     public class TPHValidationService<
         TKey,
         TEntity,

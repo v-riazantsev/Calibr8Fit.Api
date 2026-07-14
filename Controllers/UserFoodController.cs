@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user-specific food preferences and synchronization
     [Route("api/food/my")]
     [ApiController]
     public class UserFoodController(

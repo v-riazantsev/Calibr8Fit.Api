@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calibr8Fit.Api.Repository
 {
+    // Manages friendship records with bidirectional user relationship queries
     public class FriendshipRepository(ApplicationDbContext context) : IFriendshipRepository
     {
         private readonly ApplicationDbContext _context = context;
@@ -17,6 +18,7 @@ namespace Calibr8Fit.Api.Repository
 
         public async Task<Friendship?> GetFriendshipAsync(string userAId, string userBId)
         {
+            // Normalize user pair and retrieve friendship record
             var (sortedUserAId, sortedUserBId) = SortUserIds(userAId, userBId);
 
             return await _dbSet

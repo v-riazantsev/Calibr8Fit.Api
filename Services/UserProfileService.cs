@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.JsonPatch;
 
 namespace Calibr8Fit.Api.Services;
 
+// Manages user profile updates, profile picture uploads, and settings synchronization
 public class UserProfileService(
     IRepositoryBase<UserProfile, string> userProfileRepository,
     IUserRepositoryBase<ProfilePicture, string[]> profilePictureRepository,
@@ -21,7 +22,7 @@ public class UserProfileService(
 
     public async Task<UserProfileSettingsDto> SyncUserProfileSettingsAsync(User user, JsonPatchDocument<UserProfileSettingsPatchDto> patch)
     {
-        // Apply the patch to a DTO
+        // Apply client patches and update only if newer than database version
         var dto = user.ToUserProfileSettingsPatchDto();
         patch.ApplyTo(dto);
 

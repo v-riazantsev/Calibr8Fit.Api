@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Tracks user weight records and synchronization
     [Route("api/weight")]
     [ApiController]
     [Authorize]

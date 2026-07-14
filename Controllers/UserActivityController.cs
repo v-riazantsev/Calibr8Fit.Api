@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user-specific activity mappings and synchronization
     [Route("api/activity/my")]
     [ApiController]
     [Authorize]

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user profile information, picture uploads, and relationship statuses
     [ApiController]
     [Route("api/user-profile")]
     public class UserProfileController(

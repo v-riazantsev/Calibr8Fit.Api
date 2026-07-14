@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Handles CRUD operations for global activities
     [Route("api/activity")]
     [ApiController]
     public class ActivityController(

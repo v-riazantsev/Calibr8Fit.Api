@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Handles friend requests, friendship management, and push notifications
     public class FriendshipService(
         IFriendshipRepository friendshipRepository,
         IRepositoryBase<FriendRequest, string[]> friendRequestRepository,
@@ -26,7 +27,7 @@ namespace Calibr8Fit.Api.Services
 
         public async Task<Result<FriendRequestDto>> SendFriendRequestAsync(string requesterId, string addresseeUsername)
         {
-            // Get addressee ID from username
+            // Validate users are different and not already friends
             var addresseeId = await _userRepository.GetIdByUsernameAsync(addresseeUsername);
             if (addresseeId is null)
                 return Result<FriendRequestDto>.Failure($"User with username '{addresseeUsername}' not found");

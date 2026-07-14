@@ -6,13 +6,14 @@ using Calibr8Fit.Api.Repository.Base;
 
 namespace Calibr8Fit.Api.Repository
 {
+    // Tracks data version timestamps for each resource type for sync detection
     public class DataVersionRepository(
         ApplicationDbContext context
     ) : RepositoryBase<DataVersion, DataResource>(context), IDataVersionRepository
     {
         public async Task<DataVersion> AddOrUpdateAsync(DataResource dataResource)
         {
-            // Get existing data version
+            // Update or create version record for resource type
             var dataVersion = await _context.DataVersions.FindAsync(dataResource);
 
             // Add new data version or update existing

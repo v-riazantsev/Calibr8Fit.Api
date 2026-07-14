@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Records user activity sessions with validation and synchronization
     [Route("api/activity-record")]
     [ApiController]
     [Authorize]

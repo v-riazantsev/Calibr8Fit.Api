@@ -4,6 +4,7 @@ using Calibr8Fit.Api.Interfaces.Service;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Synchronizes client-side entities with the server, handling merges and conflicts
     public class SyncService<T, TKey>(
         IUserSyncRepositoryBase<T, TKey> repository
         ) : ISyncService<T, TKey>
@@ -21,7 +22,7 @@ namespace Calibr8Fit.Api.Services
         {
             var result = new List<T>();
 
-            // Get all entities that have been modified since the last sync
+            // Retrieve all modified entities since last sync
             var modifiedEntities = await _repository.GetAllFromDateByUserIdAsync(lastSyncedAt, userId);
             // Add new entities to the result
 

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Retrieves the current authenticated user from claims principal
     public class CurrentUserService(UserManager<User> userManager) : ICurrentUserService
     {
         private readonly UserManager<User> _userManager = userManager;

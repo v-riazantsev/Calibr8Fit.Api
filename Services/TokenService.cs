@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Generates and validates JWT access and refresh tokens
     public class TokenService(TokenValidationParameters tokenValidationParameters) : ITokenService
     {
         private readonly TokenValidationParameters _tokenValidationParameters = tokenValidationParameters;
@@ -77,6 +78,7 @@ namespace Calibr8Fit.Api.Services
         }
         internal static string ComputeSha256Hash(string rawToken)
         {
+            // Hash refresh token for secure storage
             var bytes = Encoding.UTF8.GetBytes(rawToken);
             var hash = SHA256.HashData(bytes);
             return Convert.ToBase64String(hash);

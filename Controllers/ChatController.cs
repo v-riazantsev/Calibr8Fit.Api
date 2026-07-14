@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages direct and group messaging, chats, and message history
     [ApiController]
     [Route("api/chat")]
     public class ChatController(

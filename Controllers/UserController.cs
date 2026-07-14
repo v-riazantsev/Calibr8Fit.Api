@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user accounts, search, and profile deletion
     [Route("api/users")]
     [Authorize]
     [ApiController]

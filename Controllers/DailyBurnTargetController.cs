@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages daily calorie burn targets per activity with validation and synchronization
     [Route("api/daily-burn-target")]
     [ApiController]
     [Authorize]

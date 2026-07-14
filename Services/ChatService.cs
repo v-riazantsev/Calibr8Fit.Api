@@ -9,6 +9,7 @@ using Calibr8Fit.Api.Services.Results;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Manages chat creation, direct messages, group chats, and message history
     public class ChatService(
         IChatRepository chatRepository,
         IUserRepositoryBase<ChatMember, (Guid, string)> chatMemberRepository,
@@ -25,7 +26,7 @@ namespace Calibr8Fit.Api.Services
 
         private async Task<Chat> CreateDirectChatAsync(string userId, string otherUserId)
         {
-            // Check if a direct chat already exists between the two users
+            // Ensure no duplicate direct chats exist between the two users
             if (await _chatRepository.GetDirectChatBetweenUsersAsync(userId, otherUserId) is not null)
                 throw new InvalidOperationException("A direct chat between these users already exists.");
 
@@ -45,7 +46,7 @@ namespace Calibr8Fit.Api.Services
 
         public async Task<Result<ChatPreviewDto>> GetDirectChatWithUsernameAsync(string userId, string otherUserName)
         {
-            // Try to get recipient user by username
+            // Fetch or create direct chat with another user
             var recipientUser = await _userRepository.GetByUsernameAsync(otherUserName);
             if (recipientUser is null)
                 return Result<ChatPreviewDto>.Failure("Recipient user not found.");

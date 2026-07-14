@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.StaticFiles;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Handles file operations including image validation, saving, and deletion
     public class FileService : IFileService
     {
         public bool IsImage(IFormFile file) => file.ContentType.StartsWith("image/");
         public bool IsExist(string path) => !string.IsNullOrEmpty(path) && File.Exists(path);
         public async Task<string> SaveImageAsync(IFormFile file, string savePath, string? fileName = null)
         {
-            // Check if file is an image
+            // Validate file is an image before saving to disk
             if (!IsImage(file))
                 throw new InvalidOperationException("The uploaded file is not a valid image.");
 

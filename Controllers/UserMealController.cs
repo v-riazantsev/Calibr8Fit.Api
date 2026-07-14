@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user meal creation and synchronization
     [Route("api/user-meal")]
     [ApiController]
     [Authorize]

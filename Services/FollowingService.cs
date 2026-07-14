@@ -9,6 +9,7 @@ using Calibr8Fit.Api.Services.Results;
 // TODO: consider moving querying logic to repository layer
 namespace Calibr8Fit.Api.Services
 {
+    // Manages user follow relationships, followers, and following lists
     public class FollowingService(
         IUserRepository userRepository,
         IUserRepositoryBase<UserFollower, (string, string)> userFollowerRepository,
@@ -20,6 +21,7 @@ namespace Calibr8Fit.Api.Services
         private readonly IPathService _pathService = pathService;
         public async Task<Result> FollowUserAsync(string followerId, string followeeUsername)
         {
+            // Resolve username to ID and validate follow relationship doesn't already exist
             var followeeId = await _userRepository.GetIdByUsernameAsync(followeeUsername);
             if (followeeId is null) return Result.Failure("User to follow not found");
             if (followerId == followeeId) return Result.Failure("Cannot follow yourself");

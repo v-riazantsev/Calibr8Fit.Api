@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Registers device push notification tokens for real-time notifications
     [ApiController]
     [Route("api/push")]
     [Authorize]

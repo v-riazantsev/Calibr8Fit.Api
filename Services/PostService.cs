@@ -8,6 +8,7 @@ using Calibr8Fit.Api.Services.Results;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Manages user posts, comments, likes, and image uploads
     public class PostService(
         IUserRepositoryBase<Post, Guid> postRepository,
         IUserRepositoryBase<Comment, Guid> commentRepository,
@@ -26,7 +27,7 @@ namespace Calibr8Fit.Api.Services
 
         public async Task<Result<PostDto>> CreatePostAsync(CreatePostRequestDto createPostRequestDto, string userId)
         {
-            // Get username for path generation
+            // Resolve user ID to username for file path generation
             var username = (await _userRepository.GetAsync(userId))?.UserName;
             if (username is null) return Result<PostDto>.Failure("User not found");
 

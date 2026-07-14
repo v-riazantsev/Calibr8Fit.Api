@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Manages user follow relationships and follower/following lists
     [ApiController]
     [Route("api/follow")]
     [Authorize]

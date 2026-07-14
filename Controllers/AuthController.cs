@@ -7,6 +7,7 @@ using Calibr8Fit.Api.Controllers.Abstract;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Handles user authentication, registration, and token management
     [Route("api/auth")]
     [ApiController]
     public class AuthController(

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Handles CRUD operations for global food items
     [Route("api/food")]
     [ApiController]
     public class FoodController(

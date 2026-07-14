@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Constructs file paths and URLs for user uploads, posts, and profile pictures
     public class PathService(
         IHttpContextAccessor httpContextAccessor,
         IOptions<StorageOptions> options
@@ -14,6 +15,7 @@ namespace Calibr8Fit.Api.Services
 
         private static string EnsureDirectoryExists(string path)
         {
+            // Create directory if it doesn't exist and return the path
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 

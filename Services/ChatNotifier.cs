@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Sends real-time message notifications via SignalR and push notifications
     public class ChatNotifier(
     IHubContext<MessengerHub> hub,
     IPushService pushService

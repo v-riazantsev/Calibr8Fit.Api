@@ -6,12 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calibr8Fit.Api.Repository
 {
+    // Handles user queries including search and username lookups
     public class UserRepository(
         ApplicationDbContext context
     ) : RepositoryBase<User, string>(context), IUserRepository
     {
         public async Task<IEnumerable<User>> SearchByUsernameAsync(string query, int page = 0, int size = 10)
         {
+            // Normalize query and search with pagination
             query = query.Trim().ToLowerInvariant();
 
             return await _dbSet

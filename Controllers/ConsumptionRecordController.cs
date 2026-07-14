@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Tracks food/meal consumption records with validation and synchronization
     [Route("api/consumption-record")]
     [ApiController]
     [Authorize]

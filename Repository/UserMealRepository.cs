@@ -4,6 +4,7 @@ using Calibr8Fit.Api.Repository.Base;
 
 namespace Calibr8Fit.Api.Repository
 {
+    // Manages user meals with meal item composition persistence
     public class UserMealRepository(
         ApplicationDbContext context
     ) : UserSyncRepositoryBase<UserMeal, Guid>(context)

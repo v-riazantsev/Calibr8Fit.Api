@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Handles user authentication, registration, login, and token refresh
     public class AuthService(
         UserManager<User> userManager,
         SignInManager<User> signInManager,
@@ -27,7 +28,7 @@ namespace Calibr8Fit.Api.Services
 
         public async Task<IdentityResult<TokenDto>> RegisterUserAsync(RegisterDto registerDto)
         {
-            // Crete new user
+            // Create new user entity
             var user = new User
             {
                 UserName = registerDto.UserName

@@ -6,6 +6,7 @@ using FirebaseAdmin.Messaging;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Manages push notification tokens and sends Firebase push notifications
     public class PushService(
         IUserRepositoryBase<PushToken, string[]> pushTokenRepository
     ) : IPushService
@@ -28,6 +29,7 @@ namespace Calibr8Fit.Api.Services
 
         public async Task PushNotificationAsync(string userId, string title, string body, string? imageUrl = null)
         {
+            // Fetch all registered tokens for user and send multi-platform notifications
             var tokens = await _pushTokenRepository.GetAllByUserIdAsync(userId);
 
             if (tokens.Count == 0) return;

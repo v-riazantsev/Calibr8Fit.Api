@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Tracks user water intake records and synchronization
     [Route("api/water-intake")]
     [ApiController]
     [Authorize]

@@ -7,6 +7,7 @@ using Calibr8Fit.Api.Services.Results;
 
 namespace Calibr8Fit.Api.Services
 {
+    // Coordinates message sending and real-time notifications across channels
     public class MessengerService(
         IChatService chatService,
         IChatNotifier chatNotifier,
@@ -21,7 +22,7 @@ namespace Calibr8Fit.Api.Services
             SendDirectMessageRequestDto requestDto,
             User sender)
         {
-            // Try to get recipient user by username
+            // Validate recipient exists before persisting message
             var recipientUser = await _userRepository.GetByUsernameAsync(requestDto.RecipientUsername);
             if (recipientUser is null)
                 return Result<SendChatMessageResultDto>.Failure("Recipient user not found.");

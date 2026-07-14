@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Calibr8Fit.Api.Controllers
 {
+    // Handles friendship requests, management, and friend relationship queries
     [ApiController]
     [Route("api/friendship")]
     [Authorize]
