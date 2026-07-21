@@ -25,6 +25,8 @@
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
     <PackageReference Include="NSwag.AspNetCore" Version="14.4.0" />
     <PackageReference Include="Scalar.AspNetCore" Version="2.5.6" />
+    <Compile Remove="tests/**/*.cs" />
+    <None Remove="tests/**" />
   </ItemGroup>
 
 </Project>

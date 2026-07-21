@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/tests/">
+    <Project Path="tests/Calibr8Fit.Api.Tests/Calibr8Fit.Api.Tests.csproj" />
+  </Folder>
+  <Project Path="Calibr8Fit.Api.csproj" />
+</Solution>
