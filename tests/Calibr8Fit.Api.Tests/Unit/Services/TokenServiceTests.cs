@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using Calibr8Fit.Api.Services;
 using Calibr8Fit.Api.Tests.Unit.Helpers;
 using Microsoft.IdentityModel.Tokens;
-using Xunit;
 
 namespace Calibr8Fit.Api.Tests.Unit.Services
 {
