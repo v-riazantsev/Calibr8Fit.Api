@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Calibr8Fit.Api.Options;
 using Calibr8Fit.Api.Services;
 using Microsoft.AspNetCore.Http;

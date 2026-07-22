@@ -8,34 +8,34 @@ namespace Calibr8Fit.Api.Data
 {
     public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext<User>(options)
     {
-        public required DbSet<DataVersion> DataVersions { get; set; }
-        public required DbSet<UserProfile> UserProfiles { get; set; }
-        public required DbSet<RefreshToken> RefreshTokens { get; set; }
-        public required DbSet<PushToken> PushTokens { get; set; }
-        public required DbSet<ActivityBase> BaseActivities { get; set; }
-        public required DbSet<Food> BaseFood { get; set; }
-        public required DbSet<ActivityRecord> ActivityRecords { get; set; }
-        public required DbSet<ConsumptionRecord> ConsumptionRecords { get; set; }
-        public required DbSet<WaterIntakeRecord> WaterIntakeRecords { get; set; }
-        public required DbSet<WeightRecord> WeightRecords { get; set; }
+        public DbSet<DataVersion> DataVersions { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<PushToken> PushTokens { get; set; }
+        public DbSet<ActivityBase> BaseActivities { get; set; }
+        public DbSet<Food> BaseFood { get; set; }
+        public DbSet<ActivityRecord> ActivityRecords { get; set; }
+        public DbSet<ConsumptionRecord> ConsumptionRecords { get; set; }
+        public DbSet<WaterIntakeRecord> WaterIntakeRecords { get; set; }
+        public DbSet<WeightRecord> WeightRecords { get; set; }
         public IQueryable<Activity> Activities => Set<ActivityBase>().OfType<Activity>();
         public IQueryable<UserActivity> UserActivities => Set<ActivityBase>().OfType<UserActivity>();
         public IQueryable<Food> Foods => Set<FoodBase>().OfType<Food>();
         public IQueryable<UserFood> UserFoods => Set<FoodBase>().OfType<UserFood>();
-        public required DbSet<UserMeal> UserMeals { get; set; }
-        public required DbSet<UserMealItem> UserMealItems { get; set; }
-        public required DbSet<DailyBurnTarget> DailyBurnTargets { get; set; }
-        public required DbSet<FriendRequest> FriendRequests { get; set; }
-        public required DbSet<Friendship> Friendships { get; set; }
-        public required DbSet<UserFollower> UserFollowers { get; set; }
-        public required DbSet<ProfilePicture> ProfilePictures { get; set; }
-        public required DbSet<Post> Posts { get; set; }
-        public required DbSet<Comment> Comments { get; set; }
-        public required DbSet<PostLike> PostLikes { get; set; }
-        public required DbSet<PostImage> PostImages { get; set; }
-        public required DbSet<Chat> Chats { get; set; }
-        public required DbSet<ChatMember> ChatMembers { get; set; }
-        public required DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<UserMeal> UserMeals { get; set; }
+        public DbSet<UserMealItem> UserMealItems { get; set; }
+        public DbSet<DailyBurnTarget> DailyBurnTargets { get; set; }
+        public DbSet<FriendRequest> FriendRequests { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<UserFollower> UserFollowers { get; set; }
+        public DbSet<ProfilePicture> ProfilePictures { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<PostLike> PostLikes { get; set; }
+        public DbSet<PostImage> PostImages { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<ChatMember> ChatMembers { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
